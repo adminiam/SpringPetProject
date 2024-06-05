@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Spring Security Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center; /* Центрирование по вертикали */
+            margin-top: 20px;
+        }
+        .button-container {
+            margin-right: 20px; /* Отступ справа от кнопки */
+            display: flex;
+            align-items: center; /* Центрирование по вертикали внутри контейнера кнопки */
+        }
+        .button-container button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+        .button-container button a {
+            text-decoration: none;
+            color: white;
+            display: block;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        ul li {
+            background-color: #fff;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+<div>
+    <h1>Tracking Numbers</h1>
+    <div class="container">
+        <div class="button-container">
+            <button>
+                <a href="https://parcelsapp.com/en/tracking" target="blank">Track</a>
+            </button>
+        </div>
+        <div>
+            <ul>
+                <li th:each="trackingNumber : ${trackingNumbers}" th:text="${trackingNumber}"></li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>
