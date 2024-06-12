@@ -11,7 +11,7 @@ public class Config {
     public DriverManagerDataSource configuration(){
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://db:3306/logisticsSystem");
+        dataSource.setUrl("jdbc:mysql://localhost:3306/aliOrders");
         dataSource.setUsername("root");
         dataSource.setPassword("Zxcvb122");
         return dataSource;
