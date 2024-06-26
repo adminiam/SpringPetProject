@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <title>Spring Security Example</title>
+    <title>Aliexpress</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -80,17 +80,68 @@
             display: block;
         }
 
-        .add-button-container {
-            background: #4CAF50;
-            border-radius: 20px;
-            text-align: center;
-        }
-
         .add-button {
             color: white;
             font-size: 20px;
+            text-decoration: none;
+        }
+        .add-button-container {
+            text-align: center;
+            margin-top: 20px;
         }
 
+        .add-button {
+            font-size: 24px;
+            text-decoration: none;
+            color: white;
+            background-color: #4CAF50;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .centered-form {
+            text-align: center;
+        }
+
+        #modalToggle:checked + .modal {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -98,8 +149,20 @@
     <h1>Tracking Numbers</h1>
     <div class="top-right-button">
         <button>
-            <a href="/change-list" target="_self">Change List</a>
+            <a href="javascript:void(0)" onclick="openModal1()">Change list</a>
         </button>
+    </div>
+    <div id="myModal1" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal1()">&times;</span>
+            <form class="centered-form" th:action="@{/database/update}" method="post">
+                <div><label> Order id: <input type="number" name="id"/> </label></div>
+                <div><label> Order email: <input type="email" name="email"/> </label></div>
+                <div><label> Order number: <input type="text" name="orderNumber"/> </label></div>
+                <div><label> Order description: <input type="text" name="description"/> </label></div>
+                <div><input type="submit" value="Add"/></div>
+            </form>
+        </div>
     </div>
     <div class="container">
         <div class="button-container">
@@ -111,8 +174,55 @@
             <ul>
                 <li th:each="trackingNumber : ${trackingNumbers}" th:text="${trackingNumber}"></li>
             </ul>
-            <div class="add-button-container"><a class="add-button" href="https://google.com">+</a></div>
+            <div class="add-button-container">
+                <a class="add-button" href="javascript:void(0)" onclick="openModal()">+</a>
+            </div>
         </div>
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <form class="centered-form" th:action="@{/database/create}" method="post">
+                    <div><label> Order email: <input type="email" name="email"/> </label></div>
+                    <div><label> Order number: <input type="text" name="orderNumber"/> </label></div>
+                    <div><label> Order description: <input type="text" name="description"/> </label></div>
+                    <div><input type="submit" value="Add"/></div>
+                </form>
+            </div>
+        </div>
+
+        <script>
+            function openModal() {
+                document.getElementById("myModal").style.display = "block";
+            }
+
+            function closeModal() {
+                document.getElementById("myModal").style.display = "none";
+            }
+
+
+            window.onclick = function(event) {
+                var modal = document.getElementById("myModal");
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            }
+            function openModal1() {
+                document.getElementById("myModal1").style.display = "block";
+            }
+
+            function closeModal1() {
+                document.getElementById("myModal1").style.display = "none";
+            }
+
+
+            window.onclick = function(event) {
+                var modal = document.getElementById("myModal1");
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            }
+        </script>
+
     </div>
 </div>
 </body>
