@@ -12,7 +12,7 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_order")
-    private int id_order;
+    private Long id_order;
     @Column(name = "email")
     private String email;
     @Column(name = "order_number")
