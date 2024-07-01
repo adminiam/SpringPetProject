@@ -6,7 +6,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 
 @Configuration
-public class Config {
+public class UserOrdersConfig {
     @Bean
     public DriverManagerDataSource configuration(){
         DriverManagerDataSource dataSource = new DriverManagerDataSource();

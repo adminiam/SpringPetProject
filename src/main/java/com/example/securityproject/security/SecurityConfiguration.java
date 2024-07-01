@@ -1,5 +1,7 @@
 package com.example.securityproject.security;
 
+import com.example.securityproject.repository.JpaClientRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,14 +14,15 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-import java.util.Arrays;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
-
-
+@Autowired
+  JpaClientRepo jpaClientRepo;
   @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
     return configuration.getAuthenticationManager();
@@ -29,12 +32,14 @@ public class SecurityConfiguration {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests((requests) -> requests
-            .requestMatchers("/login","/style.css").permitAll()
-
-            .anyRequest().authenticated()
-    )
+                    .requestMatchers("/login", "/style.css").permitAll()
+                    .anyRequest().authenticated()
+            )
             .formLogin((form) -> form
-                    .loginPage("/login").defaultSuccessUrl("/home", true)
+                    .loginPage("/login")
+                    .loginProcessingUrl("/login")
+                    .defaultSuccessUrl("/home", true)
+                    .failureUrl("/login?error=true")
                     .permitAll()
             );
     return http.build();
@@ -43,12 +48,16 @@ public class SecurityConfiguration {
 
   @Bean
   public UserDetailsService userDetailsService(){
-    UserDetails user = User.withDefaultPasswordEncoder()
-            .username("user")
-            .password("password")
-            .roles("USER")
-            .build();
-    return new InMemoryUserDetailsManager(user);
-  }
+    List<String> clientNames = jpaClientRepo.getClientsNames();
 
+    List<UserDetails> users = clientNames.stream()
+            .map(username -> User.withDefaultPasswordEncoder()
+                    .username(username)
+                    .password(jpaClientRepo.getClientPasswordByLoginName(username))
+                    .roles("USER")
+                    .build())
+            .collect(Collectors.toList());
+    System.out.println(jpaClientRepo.getClientPasswordByLoginName("user"));
+    return new InMemoryUserDetailsManager(users);
+  }
 }
