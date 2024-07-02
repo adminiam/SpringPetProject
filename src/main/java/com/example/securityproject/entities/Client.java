@@ -16,7 +16,7 @@ public class Client {
     @Column(name="id_client")
     Long id_client;
     @Column(name = "login_name")
-    String login_name;
+    String loginName;
     @Column(name = "password")
     String password;
 }

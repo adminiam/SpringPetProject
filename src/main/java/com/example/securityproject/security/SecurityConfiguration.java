@@ -1,5 +1,6 @@
 package com.example.securityproject.security;
 
+import com.example.securityproject.components.CustomAuthenticationSuccessHandler;
 import com.example.securityproject.repository.JpaClientRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -21,43 +22,49 @@ import java.util.stream.Collectors;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
-@Autowired
-  JpaClientRepo jpaClientRepo;
-  @Bean
-  public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
-    return configuration.getAuthenticationManager();
-  }
+    @Autowired
+    JpaClientRepo jpaClientRepo;
+    @Autowired
+    CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
 
 
-  @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.authorizeHttpRequests((requests) -> requests
-                    .requestMatchers("/login", "/style.css").permitAll()
-                    .anyRequest().authenticated()
-            )
-            .formLogin((form) -> form
-                    .loginPage("/login")
-                    .loginProcessingUrl("/login")
-                    .defaultSuccessUrl("/home", true)
-                    .failureUrl("/login?error=true")
-                    .permitAll()
-            );
-    return http.build();
-  }
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests((requests) -> requests
+                        .requestMatchers("/login", "/style.css").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .formLogin((form) -> form
+                        .loginPage("/login")
+                        .loginProcessingUrl("/login")
+                        .successHandler(customAuthenticationSuccessHandler)
+                        .failureUrl("/login?error=true")
+                        .permitAll()
+                ).logout((logout) -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout=true")
+                        .permitAll()
+                );
+        return http.build();
+    }
 
 
-  @Bean
-  public UserDetailsService userDetailsService(){
-    List<String> clientNames = jpaClientRepo.getClientsNames();
+    @Bean
+    public UserDetailsService userDetailsService() {
+        List<String> clientNames = jpaClientRepo.getClientsNames();
 
-    List<UserDetails> users = clientNames.stream()
-            .map(username -> User.withDefaultPasswordEncoder()
-                    .username(username)
-                    .password(jpaClientRepo.getClientPasswordByLoginName(username))
-                    .roles("USER")
-                    .build())
-            .collect(Collectors.toList());
-    System.out.println(jpaClientRepo.getClientPasswordByLoginName("user"));
-    return new InMemoryUserDetailsManager(users);
-  }
+        List<UserDetails> users = clientNames.stream()
+                .map(username -> User.withDefaultPasswordEncoder()
+                        .username(username)
+                        .password(jpaClientRepo.getClientPasswordByLoginName(username))
+                        .roles("USER")
+                        .build())
+                .collect(Collectors.toList());
+        return new InMemoryUserDetailsManager(users);
+    }
 }

@@ -19,7 +19,8 @@ public class Order {
     private String orderNumber;
     @Column(name = "description")
     private String description;
-
+    @Column(name = "id_client")
+    private Long clientId;
     @Override
     public String toString() {
         return email +
