@@ -1,5 +1,6 @@
 package com.example.securityproject.service;
 
+import com.example.securityproject.components.UserContext;
 import com.example.securityproject.entities.Order;
 import com.example.securityproject.repository.JpaOrderRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,20 +15,23 @@ import java.util.Optional;
 public class OrderService {
     @Autowired
     JpaOrderRepo jpaOrderRepo;
+    @Autowired
+    UserContext userContext;
 
-    public ResponseEntity<Order> createOrder(String email, String orderNumber, String description) {
+    public RedirectView createOrder(String email, String orderNumber, String description) {
         try {
             Order order = new Order();
             order.setEmail(email);
             order.setOrderNumber(orderNumber);
             order.setDescription(description);
+            order.setClientId(userContext.getId());
             jpaOrderRepo.save(order);
-            return ResponseEntity.ok(order);
+            return new RedirectView("/home?id="+userContext.getId(), true);
         } catch (DataAccessException e) {
             e.printStackTrace();
-            return ResponseEntity.internalServerError().build();
-        }
 
+        }
+        return new RedirectView("/error", true);
     }
 
     public ResponseEntity<Order> updateOrder(Long id, String email, String orderNumber, String description) {
@@ -57,7 +61,7 @@ public class OrderService {
             Optional<Order> optionalOrder = jpaOrderRepo.findById(id);
             if (optionalOrder.isPresent()) {
                 jpaOrderRepo.delete(optionalOrder.get());
-                return new RedirectView("/home", true);
+                return new RedirectView("/home?id="+userContext.getId(), true);
             }
 
         } catch (DataAccessException e) {

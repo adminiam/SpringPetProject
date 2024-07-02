@@ -16,7 +16,7 @@ public class DBController {
     @Autowired
     OrderService orderService;
     @PostMapping("create")
-    public ResponseEntity<Order> createOrder(@RequestParam String email, @RequestParam String orderNumber, @RequestParam String description) {
+    public RedirectView createOrder(@RequestParam String email, @RequestParam String orderNumber, @RequestParam String description) {
         return orderService.createOrder(email,orderNumber,description);
     }
     @PostMapping("update")
