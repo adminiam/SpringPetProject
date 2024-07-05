@@ -1,6 +1,9 @@
 package com.example.securityproject.components;
 
+import com.example.securityproject.entities.Client;
 import com.example.securityproject.repository.JpaClientRepo;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,13 +18,13 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     @Autowired
     UserContext userContext;
     @Override
-    public void onAuthenticationSuccess(jakarta.servlet.http.HttpServletRequest request, jakarta.servlet.http.HttpServletResponse response, Authentication authentication) throws IOException, jakarta.servlet.ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         String username = authentication.getName();
-        userContext.setId(jpaClientRepo.getClientByLoginName(username).getId_client());
+        Client clientData = jpaClientRepo.getClientByLoginName(username);
+        userContext.setId(clientData.getIdClientUUID());
         userContext.setName(username);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         SecurityContextHolder.getContext().setAuthentication(userContext);
-
-        response.sendRedirect("/home?id=" + jpaClientRepo.getClientByLoginName(username).getId_client());
+        response.sendRedirect("/home");
     }
 }

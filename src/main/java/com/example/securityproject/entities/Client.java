@@ -7,6 +7,9 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.nio.ByteBuffer;
+import java.util.UUID;
+
 @Entity
 @Setter
 @Getter
@@ -14,9 +17,25 @@ import lombok.Setter;
 public class Client {
     @Id
     @Column(name="id_client")
-    Long id_client;
+    private byte[] idClient;
+
     @Column(name = "login_name")
-    String loginName;
+    private String loginName;
+
     @Column(name = "password")
-    String password;
+    private String password;
+
+    public UUID getIdClientUUID() {
+        ByteBuffer byteBuffer = ByteBuffer.wrap(idClient);
+        long mostSigBits = byteBuffer.getLong();
+        long leastSigBits = byteBuffer.getLong();
+        return new UUID(mostSigBits, leastSigBits);
+    }
+
+    public void setIdClientUUID(UUID uuid) {
+        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[16]);
+        byteBuffer.putLong(uuid.getMostSignificantBits());
+        byteBuffer.putLong(uuid.getLeastSignificantBits());
+        this.idClient = byteBuffer.array();
+    }
 }

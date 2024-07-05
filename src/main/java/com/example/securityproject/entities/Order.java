@@ -20,7 +20,7 @@ public class Order {
     @Column(name = "description")
     private String description;
     @Column(name = "id_client")
-    private Long clientId;
+    private byte[] clientId;
     @Override
     public String toString() {
         return email +
