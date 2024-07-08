@@ -2,36 +2,36 @@ package com.example.securityproject.security;
 
 import com.example.securityproject.components.CustomAuthenticationSuccessHandler;
 import com.example.securityproject.repository.JpaClientRepo;
+import com.example.securityproject.service.PasswordEncoderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
+
     @Autowired
     JpaClientRepo jpaClientRepo;
+
     @Autowired
     CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+
+    @Autowired
+    PasswordEncoderService passwordEncoderService;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
-
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -53,18 +53,24 @@ public class SecurityConfiguration {
         return http.build();
     }
 
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService((username) -> {
+            String password = jpaClientRepo.getClientPasswordByLoginName(username);
+            return User.withUsername(username)
+                    .password(password)  // Здесь передаем пароль без шифрования
+                    .roles("USER")
+                    .build();
+        }).passwordEncoder(new PasswordEncoder() {
+            @Override
+            public String encode(CharSequence rawPassword) {
+                return rawPassword.toString();
+            }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        List<String> clientNames = jpaClientRepo.getClientsNames();
-
-        List<UserDetails> users = clientNames.stream()
-                .map(username -> User.withDefaultPasswordEncoder()
-                        .username(username)
-                        .password(jpaClientRepo.getClientPasswordByLoginName(username))
-                        .roles("USER")
-                        .build())
-                .collect(Collectors.toList());
-        return new InMemoryUserDetailsManager(users);
+            @Override
+            public boolean matches(CharSequence rawPassword, String encodedPassword) {
+                return passwordEncoderService.passwordVerify("user", rawPassword.toString());
+            }
+        });
     }
 }

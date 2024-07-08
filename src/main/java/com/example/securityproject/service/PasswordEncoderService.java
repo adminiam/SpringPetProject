@@ -1,0 +1,26 @@
+package com.example.securityproject.service;
+
+import com.example.securityproject.dbconfig.Argon2PasswordEncoderConfig;
+import com.example.securityproject.repository.JpaClientRepo;
+import de.mkammerer.argon2.Argon2;
+import de.mkammerer.argon2.Argon2Factory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+@Service
+public class PasswordEncoderService {
+    @Autowired
+    Argon2PasswordEncoderConfig passwordEncoderConfig;
+    @Autowired
+    JpaClientRepo clientRepo;
+
+    public String generatePassword(String password) {
+        return passwordEncoderConfig.generateHash(password.toCharArray());
+    }
+
+    public boolean passwordVerify(String username, String rawPassword) {
+        Argon2 argon2 = Argon2Factory.create();
+        String storedHash = clientRepo.getClientPasswordByLoginName(username);
+        return argon2.verify(storedHash, rawPassword.toCharArray());
+    }
+}
