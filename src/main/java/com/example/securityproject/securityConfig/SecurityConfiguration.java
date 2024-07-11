@@ -1,6 +1,7 @@
-package com.example.securityproject.security;
+package com.example.securityproject.securityConfig;
 
 import com.example.securityproject.components.CustomAuthenticationSuccessHandler;
+
 import com.example.securityproject.repository.JpaClientRepo;
 import com.example.securityproject.service.PasswordEncoderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 @Configuration
 @EnableWebSecurity
@@ -55,10 +58,12 @@ public class SecurityConfiguration {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        AtomicReference<String> userName = new AtomicReference<>("");
         auth.userDetailsService((username) -> {
             String password = jpaClientRepo.getClientPasswordByLoginName(username);
+            userName.set(username);
             return User.withUsername(username)
-                    .password(password)  // Здесь передаем пароль без шифрования
+                    .password(password)
                     .roles("USER")
                     .build();
         }).passwordEncoder(new PasswordEncoder() {
@@ -69,7 +74,7 @@ public class SecurityConfiguration {
 
             @Override
             public boolean matches(CharSequence rawPassword, String encodedPassword) {
-                return passwordEncoderService.passwordVerify("user", rawPassword.toString());
+                return passwordEncoderService.passwordVerify(userName.get(), rawPassword.toString());
             }
         });
     }
