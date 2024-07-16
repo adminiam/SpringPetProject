@@ -71,6 +71,7 @@ public class SecurityConfiguration {
             public String encode(CharSequence rawPassword) {
                 return rawPassword.toString();
             }
+//            TODO write encoding logic
 
             @Override
             public boolean matches(CharSequence rawPassword, String encodedPassword) {

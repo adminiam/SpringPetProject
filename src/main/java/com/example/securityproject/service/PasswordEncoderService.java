@@ -7,6 +7,8 @@ import de.mkammerer.argon2.Argon2Factory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 public class PasswordEncoderService {
     @Autowired
@@ -19,8 +21,17 @@ public class PasswordEncoderService {
     }
 
     public boolean passwordVerify(String username, String rawPassword) {
-        Argon2 argon2 = Argon2Factory.create();
-        String storedHash = clientRepo.getClientPasswordByLoginName(username);
-        return argon2.verify(storedHash, rawPassword.toCharArray());
+        try {
+            if (username != null && rawPassword != null || !Objects.equals(username, "") && !Objects.equals(rawPassword, "")) {
+                Argon2 argon2 = Argon2Factory.create();
+                String storedHash = clientRepo.getClientPasswordByLoginName(username);
+                return argon2.verify(storedHash, rawPassword.toCharArray());
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return false;
     }
 }

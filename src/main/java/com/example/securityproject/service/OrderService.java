@@ -30,7 +30,8 @@ public class OrderService {
             return new RedirectView("/home", true);
         } catch (DataAccessException e) {
             e.printStackTrace();
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return new RedirectView("/error", true);
     }
@@ -55,6 +56,9 @@ public class OrderService {
         } catch (DataAccessException e) {
             e.printStackTrace();
             return new RedirectView("/error", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new RedirectView("/error", true);
         }
     }
 
@@ -67,6 +71,8 @@ public class OrderService {
             }
 
         } catch (DataAccessException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return new RedirectView("/error", true);
