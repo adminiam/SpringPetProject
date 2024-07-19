@@ -1,4 +1,4 @@
-package com.example.securityproject.dbconfig;
+package com.example.securityproject.config.dbconfig;
 
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;

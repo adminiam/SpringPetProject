@@ -1,6 +1,6 @@
 package com.example.securityproject.service;
 
-import com.example.securityproject.dbconfig.Argon2PasswordEncoderConfig;
+import com.example.securityproject.config.dbconfig.Argon2PasswordEncoderConfig;
 import com.example.securityproject.repository.JpaClientRepo;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
@@ -25,7 +25,9 @@ public class PasswordEncoderService {
             if (username != null && rawPassword != null || !Objects.equals(username, "") && !Objects.equals(rawPassword, "")) {
                 Argon2 argon2 = Argon2Factory.create();
                 String storedHash = clientRepo.getClientPasswordByLoginName(username);
-                return argon2.verify(storedHash, rawPassword.toCharArray());
+                if (rawPassword != null) {
+                    return argon2.verify(storedHash, rawPassword.toCharArray());
+                }
             }
         }
         catch (Exception e){

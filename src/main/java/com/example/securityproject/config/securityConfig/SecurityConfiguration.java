@@ -1,4 +1,4 @@
-package com.example.securityproject.securityConfig;
+package com.example.securityproject.config.securityConfig;
 
 import com.example.securityproject.components.CustomAuthenticationSuccessHandler;
 
@@ -39,7 +39,7 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/login", "/style.css").permitAll()
+                        .requestMatchers("/login", "/style.css","/register").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
@@ -69,9 +69,8 @@ public class SecurityConfiguration {
         }).passwordEncoder(new PasswordEncoder() {
             @Override
             public String encode(CharSequence rawPassword) {
-                return rawPassword.toString();
+                return passwordEncoderService.generatePassword(rawPassword.toString());
             }
-//            TODO write encoding logic
 
             @Override
             public boolean matches(CharSequence rawPassword, String encodedPassword) {

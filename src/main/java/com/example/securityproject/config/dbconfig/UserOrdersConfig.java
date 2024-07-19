@@ -1,4 +1,4 @@
-package com.example.securityproject.dbconfig;
+package com.example.securityproject.config.dbconfig;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
