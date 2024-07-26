@@ -2,7 +2,6 @@ package com.example.securityproject.controller;
 
 import com.example.securityproject.service.RegistryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +16,7 @@ public class LoginController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestParam String name, @RequestParam String password) {
+    public String register(@RequestParam String name, @RequestParam String password) {
         return registryService.register(name, password);
     }
 }

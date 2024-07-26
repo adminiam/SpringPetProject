@@ -3,8 +3,6 @@ package com.example.securityproject.service;
 import com.example.securityproject.entities.Client;
 import com.example.securityproject.repository.JpaClientRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -16,20 +14,22 @@ public class RegistryService {
     @Autowired
     JpaClientRepo clientRepo;
 
-    public ResponseEntity<String> register(String name, String password) {
+    public String register(String name, String password) {
         if (!name.isEmpty() && !password.isEmpty()) {
             if (clientRepo.getClientByLoginName(name) != null) {
-                return new ResponseEntity<>("User already exists", HttpStatus.CONFLICT);
+//                String errorMessage = URLEncoder.encode("This user already exists", StandardCharsets.UTF_8);
+                return "redirect:/error";
             } else {
                 Client client = new Client();
                 client.setIdClientUUID(UUID.randomUUID());
                 client.setLoginName(name);
                 client.setPassword(encoderService.generatePassword(password));
                 clientRepo.save(client);
-                return new ResponseEntity<>("redirect:/login", HttpStatus.OK);
+                return "redirect:/login";
             }
         } else {
-            return new ResponseEntity<>("Name and password must not be empty", HttpStatus.BAD_REQUEST);
+//            String errorMessage = URLEncoder.encode("Error occurred", StandardCharsets.UTF_8);
+            return "redirect:/error";
         }
     }
 

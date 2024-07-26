@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ошибка</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8d7da;
+            color: #721c24;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .error-container {
+            text-align: center;
+            background-color: #ffffff;
+            border: 1px solid #f5c6cb;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .error-container h1 {
+            font-size: 2.5em;
+            margin: 0.2em 0;
+        }
+        .error-container p {
+            margin: 1em 0;
+        }
+        .error-container a {
+            color: #155724;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .error-container a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div class="error-container">
+    <h1>Ошибка</h1>
+
+    <p th:text="${errorMessage}">Что-то пошло не так.</p>
+    <p>Попробуйте <a th:href="@{/}">вернуться на главную страницу</a>.</p>
+</div>
+</body>
+</html>
