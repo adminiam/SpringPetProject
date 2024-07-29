@@ -18,13 +18,15 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     @Autowired
     UserContext userContext;
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
+    public void onAuthenticationSuccess(HttpServletRequest request,
+                                        HttpServletResponse response,
+                                        Authentication authentication) throws IOException {
         String username = authentication.getName();
         Client clientData = jpaClientRepo.getClientByLoginName(username);
         userContext.setId(clientData.getIdClientUUID());
         userContext.setName(username);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         SecurityContextHolder.getContext().setAuthentication(userContext);
-        response.sendRedirect("/home");
+        response.sendRedirect("home");
     }
 }

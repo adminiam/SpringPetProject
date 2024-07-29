@@ -17,7 +17,6 @@ public class RegistryService {
     public String register(String name, String password) {
         if (!name.isEmpty() && !password.isEmpty()) {
             if (clientRepo.getClientByLoginName(name) != null) {
-//                String errorMessage = URLEncoder.encode("This user already exists", StandardCharsets.UTF_8);
                 return "redirect:/error";
             } else {
                 Client client = new Client();
@@ -28,7 +27,6 @@ public class RegistryService {
                 return "redirect:/login";
             }
         } else {
-//            String errorMessage = URLEncoder.encode("Error occurred", StandardCharsets.UTF_8);
             return "redirect:/error";
         }
     }
