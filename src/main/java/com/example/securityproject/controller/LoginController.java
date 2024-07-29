@@ -15,7 +15,7 @@ public class LoginController {
         return "login";
     }
 
-    @PostMapping("/register")
+    @PostMapping("register")
     public String register(@RequestParam String name, @RequestParam String password) {
         return registryService.register(name, password);
     }

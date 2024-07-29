@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
 @Autowired
     HomeService homeService;
-    @GetMapping("/home")
+    @GetMapping("home")
     public String getTrackingStatuses(Model model) {
         homeService.getTrackingStatuses(model);
         return "home";
