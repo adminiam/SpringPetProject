@@ -11,7 +11,7 @@ CREATE TABLE clients
 
 CREATE TABLE orders
 (
-    id_order     INT primary key not null,
+    id_order     INT primary key not null AUTO_INCREMENT,
     email        varchar(225)    not null,
     order_number varchar(225)    not null,
     description  varchar(225)    not null,
