@@ -8,4 +8,6 @@ import java.util.List;
 public interface JpaOrderRepo extends JpaRepository<Order, Long> {
     @Query("select o from Order o where o.clientId = :clientId")
     List<Order> findAllByClientId(byte[] clientId);
+
+    void deleteAllByClientId(byte [] id);
 }

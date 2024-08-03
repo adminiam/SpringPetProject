@@ -3,6 +3,7 @@ package com.example.securityproject.service;
 import com.example.securityproject.components.UserContext;
 import com.example.securityproject.entities.Order;
 import com.example.securityproject.repository.JpaOrderRepo;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -70,6 +71,18 @@ public class OrderService {
                 return new RedirectView("/home", true);
             }
 
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new RedirectView("/error", true);
+    }
+    @Transactional
+    public RedirectView deleteAllOrders() {
+        try {
+            jpaOrderRepo.deleteAllByClientId(clientService.uuidToBytes(userContext.getId()));
+            return new RedirectView("/home", true);
         } catch (DataAccessException e) {
             e.printStackTrace();
         } catch (Exception e) {

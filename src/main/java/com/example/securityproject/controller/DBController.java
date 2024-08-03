@@ -30,4 +30,8 @@ public class DBController {
     public RedirectView deleteOrder(@RequestParam Long trackingNumber) {
          return orderService.deleteOrder(trackingNumber);
     }
+    @PostMapping("deleteAll")
+    public RedirectView deleteAllOrders() {
+        return orderService.deleteAllOrders();
+    }
 }

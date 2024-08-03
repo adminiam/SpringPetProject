@@ -10,6 +10,9 @@
     <form th:action="@{/logout}" method="post">
         <input type="submit" value="Logout" />
     </form>
+    <form th:action="@{/database/deleteAll}" method="post">
+        <input type="submit" value="Delete All" />
+    </form>
     <div class="top-right-button">
         <button>
             <a href="javascript:void(0)" onclick="openModal1()">Change list</a>
