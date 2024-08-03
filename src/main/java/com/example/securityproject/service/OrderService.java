@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class OrderService {
@@ -23,6 +24,7 @@ public class OrderService {
     public RedirectView createOrder(String email, String orderNumber, String description) {
         try {
             Order order = new Order();
+            order.setIdClientUUID(UUID.randomUUID());
             order.setEmail(email);
             order.setOrderNumber(orderNumber);
             order.setDescription(description);
