@@ -1,5 +1,6 @@
 package com.example.securityproject.service;
 
+import com.example.securityproject.exception.SuppressedStackTraceException;
 import org.springframework.stereotype.Service;
 
 import java.nio.ByteBuffer;
@@ -17,8 +18,7 @@ public class ClientService {
             byteBuffer.putLong(uuid.getLeastSignificantBits());
             return byteBuffer.array();
         } catch (Exception exception) {
-            exception.printStackTrace();
-            return null;
+            throw new SuppressedStackTraceException("Error occurred " + exception.getMessage());
         }
     }
 }

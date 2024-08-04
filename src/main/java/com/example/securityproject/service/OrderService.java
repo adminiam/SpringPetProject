@@ -2,6 +2,7 @@ package com.example.securityproject.service;
 
 import com.example.securityproject.components.UserContext;
 import com.example.securityproject.entities.Order;
+import com.example.securityproject.exception.SuppressedStackTraceException;
 import com.example.securityproject.repository.JpaOrderRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +33,10 @@ public class OrderService {
             jpaOrderRepo.save(order);
             return new RedirectView("/home", true);
         } catch (DataAccessException e) {
-            e.printStackTrace();
+            throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
         }
-        return new RedirectView("/error", true);
     }
 
     public RedirectView updateOrder(Long id, String email, String orderNumber, String description) {
@@ -57,10 +57,8 @@ public class OrderService {
                 return new RedirectView("/error", true);
             }
         } catch (DataAccessException e) {
-            e.printStackTrace();
             return new RedirectView("/error", true);
         } catch (Exception e) {
-            e.printStackTrace();
             return new RedirectView("/error", true);
         }
     }
@@ -74,23 +72,23 @@ public class OrderService {
             }
 
         } catch (DataAccessException e) {
-            e.printStackTrace();
+            throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
         }
         return new RedirectView("/error", true);
     }
+
     @Transactional
     public RedirectView deleteAllOrders() {
         try {
             jpaOrderRepo.deleteAllByClientId(clientService.uuidToBytes(userContext.getId()));
             return new RedirectView("/home", true);
         } catch (DataAccessException e) {
-            e.printStackTrace();
+            throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
         }
-        return new RedirectView("/error", true);
     }
 
 }
