@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en-US">
 <head>
     <title>Aliexpress</title>
 </head>
@@ -22,7 +22,6 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal1()">&times;</span>
             <form class="centered-form" th:action="@{/database/update}" method="post">
-                <div><label> Order id: <input type="number" name="id"/> </label></div>
                 <div><label> Order email: <input type="email" name="email"/> </label></div>
                 <div><label> Order number: <input type="text" name="orderNumber"/> </label></div>
                 <div><label> Order description: <input type="text" name="description"/> </label></div>
@@ -34,7 +33,6 @@
         <div>
             <ul>
                 <li th:each="trackingNumber : ${trackingNumbers}">
-                    <span th:text="${trackingNumber.id_order}"></span>
                     <span th:text="${trackingNumber.email}"></span>
                     <a th:href="'https://parcelsapp.com/en/tracking/' + ${trackingNumber.orderNumber}" th:text="${trackingNumber.orderNumber}" target="_blank"></a>
                     <span th:text="${trackingNumber.description}"></span>
@@ -61,42 +59,9 @@
                 </form>
             </div>
         </div>
-
-        <script>
-            function openModal() {
-                document.getElementById("myModal").style.display = "block";
-            }
-
-            function closeModal() {
-                document.getElementById("myModal").style.display = "none";
-            }
-
-
-            window.onclick = function(event) {
-                var modal = document.getElementById("myModal");
-                if (event.target === modal) {
-                    modal.style.display = "none";
-                }
-            }
-            function openModal1() {
-                document.getElementById("myModal1").style.display = "block";
-            }
-
-            function closeModal1() {
-                document.getElementById("myModal1").style.display = "none";
-            }
-
-
-            window.onclick = function(event) {
-                var modal = document.getElementById("myModal1");
-                if (event.target === modal) {
-                    modal.style.display = "none";
-                }
-            }
-        </script>
-
     </div>
 </div>
+<script th:src="@{main.js}"></script>
 </body>
 </html>
 
