@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="en">
+<html lang="en-US">
 <head>
     <title>Spring Security Example</title>
-    <link rel="stylesheet" th:href="@{style.css}" />
+    <link rel="stylesheet" th:href="@{style.css}"/>
 </head>
 <body>
 <div th:if="${param.error}">
@@ -11,37 +11,45 @@
 <div th:if="${param.logout}">
     You have been logged out.
 </div>
-<form class="centered-form" th:action="@{/login}" method="post">
-    <div><label> User Name : <input type="text" name="username"/> </label></div>
-    <div><label> Password: <input type="password" name="password"/> </label></div>
-    <div><input type="submit" value="Sign In"/></div><div class="register-button-container">
-    <a class="register-button" href="javascript:void(0)" onclick="openModal()">Register</a>
-</div>
+<form class="login-form" th:action="@{/login}" method="post">
+    <div class="form-container">
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input class="common-input" type="text" id="username" name="username" required/>
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input class="common-input" type="password" id="password" name="password" required/>
+        </div>
+        <div class="buttons-auth-container">
+            <button class="auth-button" type="submit">Sign In</button>
+            <span>Or</span>
+            <button type="button" class="auth-button" onclick="openModal()">Register</button>
+        </div>
+    </div>
 </form>
-<div id="myModal" class="modal">
+<div id="myModal" class="modal" onclick="closeModal(event)">
     <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <form class="centered-form-modal" th:action="@{/register}" method="post">
-            <div><label> Name: <input type="text" name="name"/> </label></div>
-            <div><label> Password: <input type="password" name="password"/> </label></div>
-            <div><input type="submit" value="Register"/></div>
-        </form>
+        <span class="close" onclick="closeModal(event)">&times;</span>
+        <div class="centered-form-modal">
+            <form th:action="@{/register}" method="post">
+                <div class="form-container">
+                    <div class="form-group">
+                        <label for="register-username">Username:</label>
+                        <input class="common-input" type="text" id="register-username" name="name" required/>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">Password:</label>
+                        <input class="common-input" type="password" id="register-password" name="password" required/>
+                    </div>
+                    <div class="button-container">
+                        <button class="auth-button" type="submit">Register</button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
-<script>    function openModal() {
-    document.getElementById("myModal").style.display = "block";
-}
-
-function closeModal() {
-    document.getElementById("myModal").style.display = "none";
-}
-
-
-window.onclick = function(event) {
-    var modal = document.getElementById("myModal");
-    if (event.target === modal) {
-        modal.style.display = "none";
-    }
-}</script>
+<script th:src="@{main.js}"></script>
 </body>
 </html>
