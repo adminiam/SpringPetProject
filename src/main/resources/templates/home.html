@@ -18,9 +18,9 @@
             <a href="javascript:void(0)" onclick="openModal1()">Change list</a>
         </button>
     </div>
-    <div id="myModal1" class="modal">
+    <div id="myModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeModal1()">&times;</span>
+            <span class="close" onclick="closeModal(event)">&times;</span>
             <form class="centered-form" th:action="@{/database/update}" method="post">
                 <div><label> Order email: <input type="email" name="email"/> </label></div>
                 <div><label> Order number: <input type="text" name="orderNumber"/> </label></div>
@@ -48,9 +48,9 @@
                 <a class="add-button" href="javascript:void(0)" onclick="openModal()">+</a>
             </div>
         </div>
-        <div id="myModal" class="modal">
+        <div id="myModal1" class="modal">
             <div class="modal-content">
-                <span class="close" onclick="closeModal()">&times;</span>
+                <span class="close" onclick="closeModal1(event)">&times;</span>
                 <form class="centered-form" th:action="@{/database/create}" method="post">
                     <div><label> Order email: <input type="email" name="email"/> </label></div>
                     <div><label> Order number: <input type="text" name="orderNumber"/> </label></div>
