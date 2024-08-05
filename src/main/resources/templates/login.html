@@ -5,12 +5,10 @@
     <link rel="stylesheet" th:href="@{style.css}"/>
 </head>
 <body>
-<div th:if="${param.error}">
-    Invalid username and password.
-</div>
-<div th:if="${param.logout}">
-    You have been logged out.
-</div>
+<div id="notifications"></div>
+<div th:if="${param.error}" data-message="Invalid username and password."></div>
+<div th:if="${param.logout}" data-message="You have been logged out."></div>
+
 <form class="login-form" th:action="@{/login}" method="post">
     <div class="form-container">
         <div class="form-group">

@@ -1,8 +1,6 @@
 body {
-    background-image: url('https://i.imgur.com/1kwWY4j.jpeg');
+    background: url('https://i.imgur.com/1kwWY4j.jpeg') no-repeat center;
     background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
     font-family: Arial, sans-serif;
     font-size: 15px;
     margin: 0;
@@ -175,3 +173,72 @@ label{
     box-sizing: border-box;
     border-radius: 4px;
 }
+
+#notifications {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.notification {
+    background-color: #ffdddd;
+    color: #d8000c;
+    padding: 15px;
+    margin: 5px 0;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    animation: slideIn 0.5s ease-in-out;
+    position: relative;
+    overflow: hidden;
+    width: 300px;
+    white-space: nowrap;
+}
+
+.notification .timer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 5px;
+    background-color: #d8000c;
+    animation: countdown 5s linear;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+@keyframes countdown {
+    from {
+        width: 0;
+    }
+    to {
+        width: 100%;
+    }
+}
+
+.notification.slideOut {
+    animation: slideOut 0.5s ease-in-out forwards;
+}
+
