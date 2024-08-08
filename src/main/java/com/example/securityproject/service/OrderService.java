@@ -20,7 +20,7 @@ public class OrderService {
     @Autowired
     UserContext userContext;
     @Autowired
-    ClientService clientService;
+    UUIDService uuidService;
 
     public RedirectView createOrder(String email, String orderNumber, String description) {
         try {
@@ -29,7 +29,7 @@ public class OrderService {
             order.setEmail(email);
             order.setOrderNumber(orderNumber);
             order.setDescription(description);
-            order.setClientId(clientService.uuidToBytes(userContext.getId()));
+            order.setClientId(uuidService.uuidToBytes(userContext.getId()));
             jpaOrderRepo.save(order);
             return new RedirectView("/home", true);
         } catch (DataAccessException e) {
@@ -50,7 +50,7 @@ public class OrderService {
                 else updatedOrder.setOrderNumber(existingOrder.get().getOrderNumber());
                 if (!description.isEmpty()) updatedOrder.setDescription(description);
                 else updatedOrder.setDescription(existingOrder.get().getDescription());
-                updatedOrder.setClientId(clientService.uuidToBytes(userContext.getId()));
+                updatedOrder.setClientId(uuidService.uuidToBytes(userContext.getId()));
                 jpaOrderRepo.save(updatedOrder);
                 return new RedirectView("/home", true);
             } else {
@@ -63,9 +63,10 @@ public class OrderService {
         }
     }
 
-    public RedirectView deleteOrder(Long id) {
+    public RedirectView deleteOrder(UUID id) {
+        //Todo
         try {
-            Optional<Order> optionalOrder = jpaOrderRepo.findById(id);
+            Optional<Order> optionalOrder = jpaOrderRepo.findByIdOrder(uuidService.uuidToBytes(id));
             if (optionalOrder.isPresent()) {
                 jpaOrderRepo.delete(optionalOrder.get());
                 return new RedirectView("/home", true);
@@ -82,7 +83,7 @@ public class OrderService {
     @Transactional
     public RedirectView deleteAllOrders() {
         try {
-            jpaOrderRepo.deleteAllByClientId(clientService.uuidToBytes(userContext.getId()));
+            jpaOrderRepo.deleteAllByClientId(uuidService.uuidToBytes(userContext.getId()));
             return new RedirectView("/home", true);
         } catch (DataAccessException e) {
             throw new SuppressedStackTraceException("Error occurred " + e.getMessage());

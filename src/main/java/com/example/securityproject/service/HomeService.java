@@ -18,14 +18,14 @@ public class HomeService {
     @Autowired
     JpaClientRepo jpaClientRepo;
     @Autowired
-    ClientService clientService;
+    UUIDService uuidService;
     @Autowired
     JpaOrderRepo jpaOrderRepo;
 
     public void getTrackingStatuses(Model model) {
         try {
             UUID uuid = userContext.getId();
-            Client client = jpaClientRepo.getClientByIdClient(clientService.uuidToBytes(uuid));
+            Client client = jpaClientRepo.getClientByIdClient(uuidService.uuidToBytes(uuid));
             byte[] v = client.getIdClient();
             model.addAttribute("trackingNumbers", jpaOrderRepo.findAllByClientId(v));
         }catch (Exception e){

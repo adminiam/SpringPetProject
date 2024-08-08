@@ -7,7 +7,7 @@ import java.nio.ByteBuffer;
 import java.util.UUID;
 
 @Service
-public class ClientService {
+public class UUIDService {
     public byte[] uuidToBytes(UUID uuid) {
         if (uuid == null) {
             return null;
