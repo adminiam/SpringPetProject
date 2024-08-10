@@ -14,7 +14,7 @@ import java.util.UUID;
 public class Order {
     @Id
     @Column(name = "id_order")
-    private byte[] id_order;
+    private byte[] idOrder;
     @Column(name = "email")
     private String email;
     @Column(name = "order_number")
@@ -27,8 +27,9 @@ public class Order {
         ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[16]);
         byteBuffer.putLong(uuid.getMostSignificantBits());
         byteBuffer.putLong(uuid.getLeastSignificantBits());
-        this.id_order = byteBuffer.array();
+        this.idOrder = byteBuffer.array();
     }
+
     @Override
     public String toString() {
         return email +
