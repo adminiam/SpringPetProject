@@ -2,6 +2,7 @@ package com.example.securityproject.service;
 
 import com.example.securityproject.components.UserContext;
 import com.example.securityproject.entities.Client;
+import com.example.securityproject.exception.SuppressedStackTraceException;
 import com.example.securityproject.repository.JpaClientRepo;
 import com.example.securityproject.repository.JpaOrderRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +18,18 @@ public class HomeService {
     @Autowired
     JpaClientRepo jpaClientRepo;
     @Autowired
-    ClientService clientService;
+    UUIDService uuidService;
     @Autowired
     JpaOrderRepo jpaOrderRepo;
+
     public void getTrackingStatuses(Model model) {
-        UUID uuid = userContext.getId();
-        Client client = jpaClientRepo.getClientByIdClient(clientService.uuidToBytes(uuid));
-        byte[] v = client.getIdClient();
-        model.addAttribute("trackingNumbers", jpaOrderRepo.findAllByClientId(v));
+        try {
+            UUID uuid = userContext.getId();
+            Client client = jpaClientRepo.getClientByIdClient(uuidService.uuidToBytes(uuid));
+            byte[] v = client.getIdClient();
+            model.addAttribute("trackingNumbers", jpaOrderRepo.findAllByClientId(v));
+        }catch (Exception e){
+            throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
+        }
     }
 }

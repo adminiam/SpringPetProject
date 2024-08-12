@@ -1,6 +1,7 @@
 package com.example.securityproject.service;
 
 import com.example.securityproject.config.dbconfig.Argon2PasswordEncoderConfig;
+import com.example.securityproject.exception.SuppressedStackTraceException;
 import com.example.securityproject.repository.JpaClientRepo;
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
@@ -30,10 +31,10 @@ public class PasswordEncoderService {
                 }
             }
         }
-        catch (Exception e){
-            e.printStackTrace();
-            return false;
+        catch (Exception e) {
+            throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
         }
         return false;
     }
+
 }

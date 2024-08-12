@@ -2,6 +2,7 @@ package com.example.securityproject.service;
 
 import com.example.securityproject.components.UserContext;
 import com.example.securityproject.entities.Order;
+import com.example.securityproject.exception.SuppressedStackTraceException;
 import com.example.securityproject.repository.JpaOrderRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class OrderService {
@@ -18,23 +20,23 @@ public class OrderService {
     @Autowired
     UserContext userContext;
     @Autowired
-    ClientService clientService;
+    UUIDService uuidService;
 
     public RedirectView createOrder(String email, String orderNumber, String description) {
         try {
             Order order = new Order();
+            order.setIdClientUUID(UUID.randomUUID());
             order.setEmail(email);
             order.setOrderNumber(orderNumber);
             order.setDescription(description);
-            order.setClientId(clientService.uuidToBytes(userContext.getId()));
+            order.setClientId(uuidService.uuidToBytes(userContext.getId()));
             jpaOrderRepo.save(order);
             return new RedirectView("/home", true);
         } catch (DataAccessException e) {
-            e.printStackTrace();
+            throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
         }
-        return new RedirectView("/error", true);
     }
 
     public RedirectView updateOrder(Long id, String email, String orderNumber, String description) {
@@ -48,47 +50,46 @@ public class OrderService {
                 else updatedOrder.setOrderNumber(existingOrder.get().getOrderNumber());
                 if (!description.isEmpty()) updatedOrder.setDescription(description);
                 else updatedOrder.setDescription(existingOrder.get().getDescription());
-                updatedOrder.setClientId(clientService.uuidToBytes(userContext.getId()));
+                updatedOrder.setClientId(uuidService.uuidToBytes(userContext.getId()));
                 jpaOrderRepo.save(updatedOrder);
                 return new RedirectView("/home", true);
             } else {
                 return new RedirectView("/error", true);
             }
         } catch (DataAccessException e) {
-            e.printStackTrace();
             return new RedirectView("/error", true);
         } catch (Exception e) {
-            e.printStackTrace();
             return new RedirectView("/error", true);
         }
     }
 
-    public RedirectView deleteOrder(Long id) {
+    public RedirectView deleteOrder(UUID id) {
+        //Todo
         try {
-            Optional<Order> optionalOrder = jpaOrderRepo.findById(id);
+            Optional<Order> optionalOrder = jpaOrderRepo.findByIdOrder(uuidService.uuidToBytes(id));
             if (optionalOrder.isPresent()) {
                 jpaOrderRepo.delete(optionalOrder.get());
                 return new RedirectView("/home", true);
             }
 
         } catch (DataAccessException e) {
-            e.printStackTrace();
+            throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
         }
         return new RedirectView("/error", true);
     }
+
     @Transactional
     public RedirectView deleteAllOrders() {
         try {
-            jpaOrderRepo.deleteAllByClientId(clientService.uuidToBytes(userContext.getId()));
+            jpaOrderRepo.deleteAllByClientId(uuidService.uuidToBytes(userContext.getId()));
             return new RedirectView("/home", true);
         } catch (DataAccessException e) {
-            e.printStackTrace();
+            throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
         }
-        return new RedirectView("/error", true);
     }
 
 }

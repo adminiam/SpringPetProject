@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("database")
 public class DBController {
@@ -27,7 +29,7 @@ public class DBController {
         return orderService.updateOrder(id,email,orderNumber,description);
     }
     @PostMapping("delete")
-    public RedirectView deleteOrder(@RequestParam Long trackingNumber) {
+    public RedirectView deleteOrder(@RequestParam UUID trackingNumber) {
          return orderService.deleteOrder(trackingNumber);
     }
     @PostMapping("deleteAll")

@@ -1,12 +1,13 @@
 package com.example.securityproject.service;
 
+import com.example.securityproject.exception.SuppressedStackTraceException;
 import org.springframework.stereotype.Service;
 
 import java.nio.ByteBuffer;
 import java.util.UUID;
 
 @Service
-public class ClientService {
+public class UUIDService {
     public byte[] uuidToBytes(UUID uuid) {
         if (uuid == null) {
             return null;
@@ -17,8 +18,7 @@ public class ClientService {
             byteBuffer.putLong(uuid.getLeastSignificantBits());
             return byteBuffer.array();
         } catch (Exception exception) {
-            exception.printStackTrace();
-            return null;
+            throw new SuppressedStackTraceException("Error occurred " + exception.getMessage());
         }
     }
 }
