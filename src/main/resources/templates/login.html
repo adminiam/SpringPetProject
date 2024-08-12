@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en-US">
 <head>
-    <title>Spring Security Example</title>
-    <link rel="stylesheet" th:href="@{style.css}"/>
+    <title>Aliexpress Login</title>
+    <link rel="stylesheet" th:href="@{styles.css}"/>
 </head>
-<body>
+<body id="login-page">
 <div id="notifications"></div>
 <div th:if="${param.error}" data-message="Invalid username and password."></div>
 <div th:if="${param.logout}" data-message="You have been logged out."></div>

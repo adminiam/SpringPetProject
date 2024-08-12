@@ -1,14 +1,8 @@
 body {
-    background: url('https://i.imgur.com/1kwWY4j.jpeg') no-repeat center;
-    background-size: cover;
     font-family: Arial, sans-serif;
-    font-size: 15px;
+    font-size: 16px;
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
 }
 
 a,
@@ -19,23 +13,76 @@ a:active {
     color: #ffffff;
 }
 
-.centered-form {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 300px;
+#home-page, #login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+#login-page {
+    background: url('https://i.imgur.com/1kwWY4j.jpeg') no-repeat center;
+    background-size: cover;
+}
+
+.wrapper h1 {
+    color: #333;
     text-align: center;
 }
 
-.centered-form div {
-    margin-bottom: 15px;
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
 }
 
-.centered-form label,
-.centered-form-modal label {
-    margin-bottom: 5px;
-    font-weight: bold;
+/*ul {*/
+/*    list-style-type: none;*/
+/*    padding: 0;*/
+/*}*/
+
+/*ul li {*/
+/*    background-color: #fff;*/
+/*    margin-bottom: 10px;*/
+/*    padding: 10px;*/
+/*    border: 1px solid #ddd;*/
+/*    border-radius: 4px;*/
+/*    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);*/
+/*}*/
+
+.header-leftButtons, .header-rightButtons {
+    position: absolute;
+    top: 20px;
+}
+
+.header-rightButtons {
+    right: 20px;
+}
+
+.header-leftButtons {
+    display: flex;
+    justify-content: space-between;
+    left: 20px;
+}
+
+#header-first-leftButton{
+    margin: 0 20px 0 0;
+}
+
+.homePage-buttons {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.add-button-container button {
+    font-size: 22px;
 }
 
 .modal {
@@ -52,26 +99,35 @@ a:active {
     transition: opacity 0.5s ease, visibility 0.5s ease;
 }
 
-
-.modal.show {
-    opacity: 1;
-    visibility: visible;
-}
-
 .modal-content {
     background-color: #fefefe;
     margin: 15% auto;
     padding: 20px;
     border: 1px solid #888;
     max-width: 600px;
-    height: 30vh;
     border-radius: 10px;
     transform: translateY(-100%);
-    transition: transform 0.5s ease;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+    opacity: 0;
+}
+
+.modal.show {
+    opacity: 1;
+    visibility: visible;
 }
 
 .modal.show .modal-content {
     transform: translateY(0);
+    opacity: 1;
+}
+
+.modal.hide {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.modal.hide .modal-content {
+    transform: translateY(-100%);
 }
 
 .close {
@@ -99,10 +155,6 @@ a:active {
     text-align: center;
 }
 
-#modalToggle:checked + .modal {
-    display: block;
-}
-
 .buttons-auth-container {
     display: flex;
     justify-content: space-between;
@@ -110,9 +162,9 @@ a:active {
 }
 
 .auth-button {
-    font-size: 15px;
+    font-size: 16px;
     width: 40%;
-    padding: 10px;
+    padding: 12px 24px;
     background-color: #007bff;
     color: white;
     border: none;
@@ -121,25 +173,33 @@ a:active {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.auth-button:hover{
+.auth-button:hover,
+.homePage-buttons:hover {
     transform: scale(1.1);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.auth-button:hover {
     background-color: #0056b3;
 }
 
-.button-container{
+.homePage-buttons:hover {
+    background-color: #409845;
+}
+
+.button-container {
     display: grid;
     place-items: center;
 }
 
-.login-form {
+.login-form, .content-homepage {
     width: 100%;
     max-width: 400px;
     background-color: #ffffff;
     margin: 0 auto;
     padding: 30px;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .form-group {
@@ -155,12 +215,7 @@ a:active {
     margin-top: 30px;
 }
 
-.auth-button {
-    padding: 12px 24px;
-    font-size: 16px;
-}
-
-label{
+label {
     font-weight: bold;
 }
 
@@ -241,4 +296,9 @@ label{
 .notification.slideOut {
     animation: slideOut 0.5s ease-in-out forwards;
 }
+
+.add-button-container {
+    text-align: center;
+}
+
 
