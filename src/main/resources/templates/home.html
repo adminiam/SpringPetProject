@@ -3,25 +3,19 @@
 <head>
     <title>Aliexpress</title>
 </head>
-<body>
-<link rel="stylesheet" th:href="@{homeStyles.css}">
-<div>
-    <h1>Tracking Numbers</h1>
-    <form th:action="@{/logout}" method="post">
-        <input type="submit" value="Logout" />
-    </form>
-    <form th:action="@{/database/deleteAll}" method="post">
-        <input type="submit" value="Delete All" />
-    </form>
-    <div class="top-right-button">
-        <button>
-            <a href="javascript:void(0)" onclick="openModal1()">Change list</a>
-        </button>
+<body id="home-page">
+<link rel="stylesheet" th:href="@{styles.css}">
+<div class="wrapper">
+    <div class="content-homepage">
+        <h1>Tracking Numbers</h1>
+        <div class="add-button-container">
+            <button type="button" class="homePage-buttons" onclick="openModal()">+</button>
+        </div>
     </div>
-    <div id="myModal" class="modal">
+    <div id="myModal1" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="closeModal(event)">&times;</span>
-            <form class="centered-form" th:action="@{/database/update}" method="post">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <form class="centered-form" th:action="@{/database/create}" method="post">
                 <div><label> Order email: <input type="email" name="email"/> </label></div>
                 <div><label> Order number: <input type="text" name="orderNumber"/> </label></div>
                 <div><label> Order description: <input type="text" name="description"/> </label></div>
@@ -29,36 +23,44 @@
             </form>
         </div>
     </div>
-    <div class="container">
-        <div>
-            <ul>
-                <li th:each="trackingNumber : ${trackingNumbers}">
-                    <span th:text="${trackingNumber.email}"></span>
-                    <a th:href="'https://parcelsapp.com/en/tracking/' + ${trackingNumber.orderNumber}" th:text="${trackingNumber.orderNumber}" target="_blank"></a>
-                    <span th:text="${trackingNumber.description}"></span>
-                    <form th:action="@{/database/delete}" method="post" style="display: inline;">
-                        <input type="hidden" name="trackingNumber" th:value="${trackingNumber.idOrder}" />
-                        <button type="submit">Delete</button>
-                    </form>
-                </li>
-            </ul>
+</div>
+<div class="header-leftButtons">
+    <form th:action="@{/logout}" method="post">
+        <button type="submit" class="homePage-buttons" id="header-first-leftButton">Logout</button>
+    </form>
+    <form th:action="@{/database/deleteAll}" method="post">
+        <button type="submit" class="homePage-buttons">Delete All</button>
+    </form>
+</div>
+<div class="header-rightButtons">
+    <button type="button" class="homePage-buttons" onclick="openModal()">Change List</button>
+</div>
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal(event)">&times;</span>
+        <form class="centered-form" th:action="@{/database/update}" method="post">
+            <div><label> Order email: <input type="email" name="email"/> </label></div>
+            <div><label> Order number: <input type="text" name="orderNumber"/> </label></div>
+            <div><label> Order description: <input type="text" name="description"/> </label></div>
+            <div><input type="submit" value="Add"/></div>
+        </form>
+    </div>
+</div>
+<div class="container">
+    <div>
+        <ul>
+            <li th:each="trackingNumber : ${trackingNumbers}">
+                <span th:text="${trackingNumber.email}"></span>
+                <a th:href="'https://parcelsapp.com/en/tracking/' + ${trackingNumber.orderNumber}"
+                   th:text="${trackingNumber.orderNumber}" target="_blank"></a>
+                <span th:text="${trackingNumber.description}"></span>
+                <form th:action="@{/database/delete}" method="post" style="display: inline;">
+                    <input type="hidden" name="trackingNumber" th:value="${trackingNumber.id_order}"/>
+                    <button type="submit">Delete</button>
 
-
-            <div class="add-button-container">
-                <a class="add-button" href="javascript:void(0)" onclick="openModal()">+</a>
-            </div>
-        </div>
-        <div id="myModal1" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closeModal1(event)">&times;</span>
-                <form class="centered-form" th:action="@{/database/create}" method="post">
-                    <div><label> Order email: <input type="email" name="email"/> </label></div>
-                    <div><label> Order number: <input type="text" name="orderNumber"/> </label></div>
-                    <div><label> Order description: <input type="text" name="description"/> </label></div>
-                    <div><input type="submit" value="Add"/></div>
                 </form>
-            </div>
-        </div>
+            </li>
+        </ul>
     </div>
 </div>
 <script th:src="@{main.js}"></script>

@@ -3,17 +3,18 @@ function openModal() {
     modal.style.display = "block";
     setTimeout(() => {
         modal.classList.add("show");
+        modal.classList.remove("hide");
     }, 10);
 }
 
 function closeModal(event) {
     const modal = document.getElementById("myModal");
-    // Закрыть модальное окно, если клик был на область вне модального окна или на кнопку закрытия
     if (event.target === modal || event.target.classList.contains('close')) {
+        modal.classList.add("hide");
         modal.classList.remove("show");
         setTimeout(() => {
             modal.style.display = "none";
-        });
+        }, 500);
     }
 }
 
@@ -27,23 +28,6 @@ window.onclick = function (event) {
 window.onload = function () {
     const modal = document.getElementById("myModal");
     modal.style.display = "none";
-}
-
-
-function openModal1() {
-    document.getElementById("myModal1").style.display = "block";
-}
-
-function closeModal1() {
-    document.getElementById("myModal1").style.display = "none";
-}
-
-
-window.onclick = function (event) {
-    var modal = document.getElementById("myModal1");
-    if (event.target === modal) {
-        modal.style.display = "none";
-    }
 }
 
 document.addEventListener('DOMContentLoaded', function () {
