@@ -12,7 +12,7 @@
             <button type="button" class="homePage-buttons" onclick="openModal()">+</button>
         </div>
     </div>
-    <div id="myModal1" class="modal">
+    <div id="myModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
             <form class="centered-form" th:action="@{/database/create}" method="post">
@@ -35,7 +35,7 @@
 <div class="header-rightButtons">
     <button type="button" class="homePage-buttons" onclick="openModal()">Change List</button>
 </div>
-<div id="myModal" class="modal">
+<div id="myModal1" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal(event)">&times;</span>
         <form class="centered-form" th:action="@{/database/update}" method="post">
@@ -55,7 +55,7 @@
                    th:text="${trackingNumber.orderNumber}" target="_blank"></a>
                 <span th:text="${trackingNumber.description}"></span>
                 <form th:action="@{/database/delete}" method="post" style="display: inline;">
-                    <input type="hidden" name="trackingNumber" th:value="${trackingNumber.id_order}"/>
+                    <input type="hidden" name="trackingNumber" th:value="${trackingNumber.idOrder}"/>
                     <button type="submit">Delete</button>
 
                 </form>
