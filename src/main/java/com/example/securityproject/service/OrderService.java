@@ -25,7 +25,7 @@ public class OrderService {
     public RedirectView createOrder(String email, String orderNumber, String description) {
         try {
             Order order = new Order();
-            order.setIdClientUUID(UUID.randomUUID());
+            order.setIdOrder(UUID.randomUUID().toString());
             order.setEmail(email);
             order.setOrderNumber(orderNumber);
             order.setDescription(description);
@@ -63,10 +63,9 @@ public class OrderService {
         }
     }
 
-    public RedirectView deleteOrder(UUID id) {
-        //Todo
+    public RedirectView deleteOrder(String id) {
         try {
-            Optional<Order> optionalOrder = jpaOrderRepo.findByIdOrder(uuidService.uuidToBytes(id));
+            Optional<Order> optionalOrder = jpaOrderRepo.findByIdOrder(id);
             if (optionalOrder.isPresent()) {
                 jpaOrderRepo.delete(optionalOrder.get());
                 return new RedirectView("/home", true);
