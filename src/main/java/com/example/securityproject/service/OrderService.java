@@ -39,9 +39,9 @@ public class OrderService {
         }
     }
 
-    public RedirectView updateOrder(Long id, String email, String orderNumber, String description) {
+    public RedirectView updateOrder(String id, String email, String orderNumber, String description) {
         try {
-            Optional<Order> existingOrder = jpaOrderRepo.findById(id);
+            Optional<Order> existingOrder = jpaOrderRepo.findByIdOrder(id);
             if (existingOrder.isPresent()) {
                 Order updatedOrder = existingOrder.get();
                 if (!email.isEmpty()) updatedOrder.setEmail(email);
