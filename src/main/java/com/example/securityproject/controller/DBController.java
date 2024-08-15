@@ -20,7 +20,7 @@ public class DBController {
         return orderService.createOrder(email,orderNumber,description);
     }
     @PostMapping("update")
-    public RedirectView updateOrder(@RequestParam Long id,
+    public RedirectView updateOrder(@RequestParam String id,
                                     @RequestParam String email,
                                     @RequestParam String orderNumber,
                                     @RequestParam String description) {
