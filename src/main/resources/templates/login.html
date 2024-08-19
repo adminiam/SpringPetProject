@@ -22,13 +22,14 @@
         <div class="buttons-auth-container">
             <button class="auth-button" type="submit">Sign In</button>
             <span>Or</span>
-            <button type="button" class="auth-button" onclick="openModal()">Register</button>
+            <button type="button" class="auth-button" onclick="openModal('myModal')">Register</button>
         </div>
     </div>
 </form>
-<div id="myModal" class="modal" onclick="closeModal(event)">
+
+<div id="myModal" class="modal">
     <div class="modal-content">
-        <span class="close" onclick="closeModal(event)">&times;</span>
+        <span class="close" onclick="closeModal('myModal')">&times;</span>
         <div class="centered-form-modal">
             <form th:action="@{/register}" method="post">
                 <div class="form-container">
@@ -48,6 +49,7 @@
         </div>
     </div>
 </div>
+
 <script th:src="@{main.js}"></script>
 </body>
 </html>

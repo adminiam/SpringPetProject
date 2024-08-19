@@ -1,5 +1,5 @@
-function openModal() {
-    const modal = document.getElementById("myModal");
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
     modal.style.display = "block";
     setTimeout(() => {
         modal.classList.add("show");
@@ -7,27 +7,29 @@ function openModal() {
     }, 10);
 }
 
-function closeModal(event) {
-    const modal = document.getElementById("myModal");
-    if (event.target === modal || event.target.classList.contains('close')) {
-        modal.classList.add("hide");
-        modal.classList.remove("show");
-        setTimeout(() => {
-            modal.style.display = "none";
-        }, 500);
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    modal.classList.add("hide");
+    modal.classList.remove("show");
+    setTimeout(() => {
+        modal.style.display = "none";
+    }, 500);
+}
+
+window.onclick = function(event) {
+    const modals = document.getElementsByClassName("modal");
+    for (let i = 0; i < modals.length; i++) {
+        if (event.target === modals[i]) {
+            closeModal(modals[i].id);
+        }
     }
 }
 
-window.onclick = function (event) {
-    const modal = document.getElementById("myModal");
-    if (event.target === modal) {
-        closeModal(event);
+window.onload = function() {
+    const modals = document.getElementsByClassName("modal");
+    for (let i = 0; i < modals.length; i++) {
+        modals[i].style.display = "none";
     }
-}
-
-window.onload = function () {
-    const modal = document.getElementById("myModal");
-    modal.style.display = "none";
 }
 
 document.addEventListener('DOMContentLoaded', function () {

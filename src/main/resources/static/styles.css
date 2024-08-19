@@ -66,7 +66,7 @@ a:active {
     left: 20px;
 }
 
-#header-first-leftButton{
+#header-first-leftButton {
     margin: 0 20px 0 0;
 }
 
@@ -192,9 +192,12 @@ a:active {
     place-items: center;
 }
 
+.login-form{
+    max-width: 400px;
+}
+
 .login-form, .content-homepage {
     width: 100%;
-    max-width: 400px;
     background-color: #ffffff;
     margin: 0 auto;
     padding: 30px;
@@ -299,6 +302,76 @@ label {
 
 .add-button-container {
     text-align: center;
+}
+
+.tracking-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.tracking-table {
+    width: 100%;
+    max-width: 600px; /* Adjust the maximum width to match your design */
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 0 auto; /* Center the table */
+}
+
+.tracking-table th,
+.tracking-table td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.tracking-table thead th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.tracking-table tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+.tracking-table .no-data {
+    font-style: italic;
+    color: #888;
+    text-align: center;
+}
+
+.tracking-table a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.tracking-table a:hover {
+    text-decoration: underline;
+}
+
+.container {
+    justify-content: center;
+    flex-direction: column;
+}
+
+.container, .actions-cell {
+    display: flex;
+    align-items: center;
+}
+
+.actions-cell {
+    justify-content: space-between;
+}
+
+.update-btn, .delete-btn {
+    padding: 8px 16px;
+}
+
+.update-btn {
+    margin-right: 10px;
 }
 
 
