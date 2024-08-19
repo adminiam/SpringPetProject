@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -39,7 +40,7 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/login","/register","/error","images/*","/*.css","/*.js").permitAll()
+                        .requestMatchers("/login", "/styles.css", "/register", "/error", "/main.js").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
@@ -48,14 +49,28 @@ public class SecurityConfiguration {
                         .successHandler(customAuthenticationSuccessHandler)
                         .failureUrl("/login?error=true")
                         .permitAll()
-                ).logout((logout) -> logout
+                )
+                .logout((logout) -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout=true")
                         .permitAll()
-                );
+                )
+                .rememberMe((rememberMe) -> rememberMe.userDetailsService(userDetailsService())
+                        .key("uniqueAndSecret")
+                        .tokenValiditySeconds(259200));
+
         return http.build();
     }
-
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return username -> {
+            String password = jpaClientRepo.getClientPasswordByLoginName(username);
+            return User.withUsername(username)
+                    .password(password)
+                    .roles("USER")
+                    .build();
+        };
+    }
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         AtomicReference<String> userName = new AtomicReference<>("");
