@@ -41,20 +41,24 @@ public class OrderService {
 
     public RedirectView updateOrder(String id, String email, String orderNumber, String description) {
         try {
-            Optional<Order> existingOrder = jpaOrderRepo.findByIdOrder(id);
-            if (existingOrder.isPresent()) {
-                Order updatedOrder = existingOrder.get();
-                if (!email.isEmpty()) updatedOrder.setEmail(email);
-                else updatedOrder.setEmail(existingOrder.get().getEmail());
-                if (!orderNumber.isEmpty()) updatedOrder.setOrderNumber(orderNumber);
-                else updatedOrder.setOrderNumber(existingOrder.get().getOrderNumber());
-                if (!description.isEmpty()) updatedOrder.setDescription(description);
-                else updatedOrder.setDescription(existingOrder.get().getDescription());
-                updatedOrder.setClientId(uuidService.uuidToBytes(userContext.getId()));
-                jpaOrderRepo.save(updatedOrder);
-                return new RedirectView("/home", true);
+            if (email.isEmpty() && orderNumber.isEmpty() && description.isEmpty()) {
+                return new RedirectView("/home?insertionError=true");
             } else {
-                return new RedirectView("/error", true);
+                Optional<Order> existingOrder = jpaOrderRepo.findByIdOrder(id);
+                if (existingOrder.isPresent()) {
+                    Order updatedOrder = existingOrder.get();
+                    if (!email.isEmpty()) updatedOrder.setEmail(email);
+                    else updatedOrder.setEmail(existingOrder.get().getEmail());
+                    if (!orderNumber.isEmpty()) updatedOrder.setOrderNumber(orderNumber);
+                    else updatedOrder.setOrderNumber(existingOrder.get().getOrderNumber());
+                    if (!description.isEmpty()) updatedOrder.setDescription(description);
+                    else updatedOrder.setDescription(existingOrder.get().getDescription());
+                    updatedOrder.setClientId(uuidService.uuidToBytes(userContext.getId()));
+                    jpaOrderRepo.save(updatedOrder);
+                    return new RedirectView("/home", true);
+                } else {
+                    return new RedirectView("/error", true);
+                }
             }
         } catch (DataAccessException e) {
             return new RedirectView("/error", true);
