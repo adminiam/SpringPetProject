@@ -8,6 +8,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.Optional;
@@ -95,4 +97,16 @@ public class OrderService {
         }
     }
 
+    public RedirectView updateOrderOpenModal(String id, RedirectAttributes redirectAttributes) {
+        Optional<Order> optionalOrder = jpaOrderRepo.findByIdOrder(id);
+        if (optionalOrder.isPresent()) {
+            Order order = optionalOrder.get();
+            redirectAttributes.addFlashAttribute("idModal", id);
+            redirectAttributes.addFlashAttribute("emailModal", order.getEmail());
+            redirectAttributes.addFlashAttribute("orderNumberModal", order.getOrderNumber());
+            redirectAttributes.addFlashAttribute("descriptionModal", order.getDescription());
+        }
+        return new RedirectView("/home?modalOpen=true", false);
+    }
 }
+

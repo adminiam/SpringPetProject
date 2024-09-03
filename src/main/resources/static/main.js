@@ -26,21 +26,32 @@ window.onclick = function(event) {
 }
 
 window.onload = function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const modalOpen = urlParams.get('modalOpen');
+
     const modals = document.getElementsByClassName("modal");
     for (let i = 0; i < modals.length; i++) {
         modals[i].style.display = "none";
     }
-}
+
+    if (modalOpen) {
+        openModal('myModal1');
+    }
+};
 
 document.addEventListener('DOMContentLoaded', function () {
     const errorMessageElement = document.querySelector('[data-message="Invalid username and password."]');
     const logoutMessageElement = document.querySelector('[data-message="You have been logged out."]');
+    const inputMessageElement = document.querySelector('[data-message="Fill in at least one field"]');
 
     if (errorMessageElement) {
         showNotification(errorMessageElement.getAttribute('data-message'));
     }
     if (logoutMessageElement) {
         showNotification(logoutMessageElement.getAttribute('data-message'));
+    }
+    if (inputMessageElement){
+        showNotification(inputMessageElement.getAttribute('data-message'));
     }
 });
 
@@ -67,5 +78,12 @@ function showNotification(message) {
     });
 }
 
-
+function toggleDropdown() {
+    var dropdownMenu = document.getElementById("dropdown-menu");
+    if (dropdownMenu.style.display === "none" || dropdownMenu.style.display === "") {
+        dropdownMenu.style.display = "block";
+    } else {
+        dropdownMenu.style.display = "none";
+    }
+}
 
