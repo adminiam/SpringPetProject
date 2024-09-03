@@ -32,26 +32,29 @@
                     </td>
                     <td th:text="${trackingNumber.description}"></td>
                     <td class="actions-cell">
-                        <button type="button" class="update-btn homePage-buttons" onclick="openModal('myModal1')">
-                            Update
-                        </button>
+
+                        <form th:action="@{/database/updateModal}" method="get" style="display: inline;">
+                            <input type="hidden" name="id" th:value="${trackingNumber.idOrder}"/>
+                            <button type="submit" class="delete-btn homePage-buttons">Update</button>
+                        </form>
+
                         <div id="myModal1" class="modal hide">
                             <div class="modal-content">
                                 <span class="close" onclick="closeModal('myModal1')">&times;</span>
                                 <form class="centered-form-modal" th:action="@{/database/update}" method="post">
                                     <div class="form-group">
                                         <label for="update-email">Order email:</label>
-                                        <input th:placeholder="${trackingNumber.email}" type="email" id="update-email" name="email"/>
+                                        <input th:placeholder="${emailModal}" type="email" id="update-email" name="email"/>
                                     </div>
                                     <div class="form-group">
                                         <label for="update-order-name">Order number:</label>
-                                        <input th:placeholder="${trackingNumber.orderNumber}" type="text" id="update-order-name" name="orderNumber"/>
+                                        <input th:placeholder="${orderNumberModal}" type="text" id="update-order-name" name="orderNumber"/>
                                     </div>
                                     <div class="form-group">
                                         <label for="update-description">Order description:</label>
-                                        <input th:placeholder="${trackingNumber.description}" type="text" id="update-description" name="description"/>
+                                        <input th:placeholder="${descriptionModal}" type="text" id="update-description" name="description"/>
                                     </div>
-                                    <input th:value="${trackingNumber.idOrder}" type="hidden" id="update-id" name="id"/>
+                                    <input th:value="${idModal}" type="hidden" id="update-id" name="id"/>
                                     <div>
                                         <button class="homePage-buttons" type="submit">Update</button>
                                     </div>

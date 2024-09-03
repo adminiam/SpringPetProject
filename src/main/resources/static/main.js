@@ -26,11 +26,18 @@ window.onclick = function(event) {
 }
 
 window.onload = function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const modalOpen = urlParams.get('modalOpen');
+
     const modals = document.getElementsByClassName("modal");
     for (let i = 0; i < modals.length; i++) {
         modals[i].style.display = "none";
     }
-}
+
+    if (modalOpen) {
+        openModal('myModal1');
+    }
+};
 
 document.addEventListener('DOMContentLoaded', function () {
     const errorMessageElement = document.querySelector('[data-message="Invalid username and password."]');
@@ -44,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
         showNotification(logoutMessageElement.getAttribute('data-message'));
     }
     if (inputMessageElement){
-        showNotification(inputMessageElement.getAttribute('data-message'))
+        showNotification(inputMessageElement.getAttribute('data-message'));
     }
 });
 
@@ -79,7 +86,4 @@ function toggleDropdown() {
         dropdownMenu.style.display = "none";
     }
 }
-
-
-
 
