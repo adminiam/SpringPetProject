@@ -361,21 +361,13 @@ label {
     flex-direction: column;
 }
 
-.container, .actions-cell {
-    display: flex;
-    align-items: center;
-}
-
-.actions-cell {
-    justify-content: space-between;
-}
-
 .update-btn, .delete-btn {
+    width: 6em;
     padding: 8px 16px;
 }
 
 .update-btn {
-    margin-right: 10px;
+    margin-bottom: 10px;
 }
 
 .dropdown-container {
