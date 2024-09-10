@@ -326,12 +326,15 @@ label {
 .tracking-table td {
     padding: 12px;
     text-align: center;
-    border-bottom: 1px solid #ddd;
 }
 
 .tracking-table thead th {
     background-color: #f2f2f2;
     font-weight: bold;
+}
+
+.tracking-table tr {
+    border-bottom: 1px solid #ddd
 }
 
 .tracking-table tbody tr:hover {
