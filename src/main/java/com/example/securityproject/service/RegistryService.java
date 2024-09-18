@@ -25,6 +25,7 @@ public class RegistryService {
                     client.setIdClientUUID(UUID.randomUUID());
                     client.setLoginName(name);
                     client.setPassword(encoderService.generatePassword(password));
+                    client.setRole("USER");
                     clientRepo.save(client);
                     return "redirect:/login";
                 }

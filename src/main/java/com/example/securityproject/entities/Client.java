@@ -25,6 +25,9 @@ public class Client {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "role")
+    private String role;
+
     public UUID getIdClientUUID() {
         ByteBuffer byteBuffer = ByteBuffer.wrap(idClient);
         long mostSigBits = byteBuffer.getLong();

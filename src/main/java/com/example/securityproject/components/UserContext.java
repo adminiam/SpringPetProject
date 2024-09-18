@@ -3,6 +3,7 @@ package com.example.securityproject.components;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,12 +22,11 @@ import org.springframework.web.context.WebApplicationContext;
 public class UserContext implements Authentication {
     private UUID id;
     private String name;
-
-
+    private String role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList();
+        return Collections.singletonList(new SimpleGrantedAuthority(this.role));
     }
 
     @Override
