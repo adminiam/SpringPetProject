@@ -25,6 +25,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         Client clientData = jpaClientRepo.getClientByLoginName(username);
         userContext.setId(clientData.getIdClientUUID());
         userContext.setName(username);
+        userContext.setRole(clientData.getRole());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         SecurityContextHolder.getContext().setAuthentication(userContext);
         response.sendRedirect("home");

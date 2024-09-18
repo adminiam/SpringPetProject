@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.core.GrantedAuthorityDefaults;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,6 +35,7 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((requests) -> requests
+                        .requestMatchers("/adminPanel").hasAuthority("ADMIN")
                         .requestMatchers("/login", "/styles.css", "/register", "/error", "/main.js","/images/*").permitAll()
                         .anyRequest().authenticated()
                 )
@@ -58,9 +61,11 @@ public class SecurityConfiguration {
     public UserDetailsService userDetailsService() {
         return username -> {
             String password = jpaClientRepo.getClientPasswordByLoginName(username);
+            String role = jpaClientRepo.getClientByLoginName(username).getRole();
+            System.out.println(role);
             return User.withUsername(username)
                     .password(password)
-                    .roles("USER")
+                    .authorities(new SimpleGrantedAuthority(role))
                     .build();
         };
     }
@@ -69,10 +74,12 @@ public class SecurityConfiguration {
         AtomicReference<String> userName = new AtomicReference<>("");
         auth.userDetailsService((username) -> {
             String password = jpaClientRepo.getClientPasswordByLoginName(username);
+            String role = jpaClientRepo.getClientByLoginName(username).getRole();
+            System.out.println("User: " + username + ", Role: " + role);
             userName.set(username);
             return User.withUsername(username)
                     .password(password)
-                    .roles("USER")
+                    .authorities(new SimpleGrantedAuthority(role))
                     .build();
         }).passwordEncoder(new PasswordEncoder() {
             @Override
@@ -86,4 +93,5 @@ public class SecurityConfiguration {
             }
         });
     }
+
 }
