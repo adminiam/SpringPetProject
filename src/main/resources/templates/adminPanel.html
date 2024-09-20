@@ -1,10 +1,117 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Aliexpress</title>
+    <link rel="stylesheet" th:href="@{styles.css}">
 </head>
-<body>
-ADMIN
+<body id="home-page">
+<div id="notifications"></div>
+<div th:if="${param.insertionError}" data-message="Fill in at least one field"></div>
+<div class="wrapper">
+    <div class="content-homepage">
+        <h1>Tracking Numbers</h1>
+        <div class="tracking-container">
+            <table class="tracking-table">
+                <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.isEmpty(clients)}">
+                    <td colspan="5" class="no-data">No tracking numbers available</td>
+                </tr>
+                <tr th:each="client : ${clients}">
+                    <td th:text="${client.loginName}"></td>
+                    <td th:text="${client.role}"></td>
+                    <td class="actions-cell">
+
+                        <form th:action="@{/database/updateModal}" method="get" style="display: inline;">
+                            <input type="hidden" name="id" th:value="${client.idClient}"/>
+                            <button type="submit" class="delete-btn homePage-buttons">Update</button>
+                        </form>
+
+                        <div id="myModal1" class="modal hide">
+                            <div class="modal-content">
+                                <span class="close" onclick="closeModal('myModal1')">&times;</span>
+                                <form class="centered-form-modal" th:action="@{/database/update}" method="post">
+                                    <div class="form-group">
+                                        <label for="update-email">Order email:</label>
+                                        <input th:placeholder="${emailModal}" type="email" id="update-email" name="email"/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="update-order-name">Order number:</label>
+                                        <input th:placeholder="${orderNumberModal}" type="text" id="update-order-name" name="orderNumber"/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="update-description">Order description:</label>
+                                        <input th:placeholder="${descriptionModal}" type="text" id="update-description" name="description"/>
+                                    </div>
+                                    <input th:value="${idModal}" type="hidden" id="update-id" name="id"/>
+                                    <div>
+                                        <button class="homePage-buttons" type="submit">Update</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <form th:action="@{/database/delete}" method="post" style="display: inline;">
+                            <input type="hidden" name="trackingNumber" th:value="${client.idClient}"/>
+                            <button type="submit" class="delete-btn homePage-buttons">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="add-button-container">
+            <button type="button" class="homePage-buttons" onclick="openModal('myModal')">+</button>
+        </div>
+    </div>
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('myModal')">&times;</span>
+            <form class="centered-form-modal" th:action="@{/database/create}" method="post">
+                <div class="form-group">
+                    <label for="order-email">Order email:</label>
+                    <input type="email" id="order-email" name="email" required/>
+                </div>
+                <div class="form-group">
+                    <label for="order-name">Order number:</label>
+                    <input type="text" id="order-name" name="orderNumber" required/>
+                </div>
+                <div class="form-group">
+                    <label for="order-description"> Order description:</label>
+                    <input type="text" id="order-description" name="description"/>
+                </div>
+                <div>
+                    <button class="homePage-buttons" type="submit">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="header-leftButtons">
+    <div class="dropdown-container">
+        <div class="dropdown-wrapper">
+            <button onclick="toggleDropdown()" class="dropdown-toggle">
+                Menu
+            </button>
+            <div id="dropdown-menu" class="dropdown-menu">
+                <div class="dropdown-menu-items">
+                    <form id="first-dropdown-item" th:action="@{/logout}" method="post">
+                        <button type="submit" class="homePage-buttons" id="header-first-leftButton">Logout</button>
+                    </form>
+                    <form th:action="@{/database/deleteAll}" method="post">
+                        <button type="submit" class="homePage-buttons">Delete All</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{main.js}"></script>
 </body>
 </html>
+>
