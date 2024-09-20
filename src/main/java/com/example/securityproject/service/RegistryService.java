@@ -18,7 +18,7 @@ public class RegistryService {
     public String register(String name, String password) {
         try {
             if (!name.isEmpty() && !password.isEmpty()) {
-                if (clientRepo.getClientByLoginName(name) != null) {
+                if (clientRepo.getClientByLoginName(name) != null && password.matches("^[A-Za-z0-9]+$")) {
                     return "redirect:/error";
                 } else {
                     Client client = new Client();
