@@ -56,8 +56,8 @@
                                 </form>
                             </div>
                         </div>
-                        <form th:action="@{/database/delete}" method="post" style="display: inline;">
-                            <input type="hidden" name="trackingNumber" th:value="${client.idClient}"/>
+                        <form th:action="@{/adminPanel/deleteClient}" method="post" style="display: inline;">
+                            <input type="hidden" name="userName" th:value="${client.loginName}"/>
                             <button type="submit" class="delete-btn homePage-buttons">Delete</button>
                         </form>
                     </td>
