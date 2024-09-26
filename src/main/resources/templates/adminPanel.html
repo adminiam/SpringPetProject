@@ -28,28 +28,20 @@
                     <td th:text="${client.role}"></td>
                     <td class="actions-cell">
 
-                        <form th:action="@{/database/updateModal}" method="get" style="display: inline;">
-                            <input type="hidden" name="id" th:value="${client.idClient}"/>
+                        <form th:action="@{/adminPanel/updateModalClient}" method="get" style="display: inline;">
+                            <input type="hidden" name="userName" th:value="${client.loginName}"/>
                             <button type="submit" class="delete-btn homePage-buttons">Update</button>
                         </form>
 
                         <div id="myModal1" class="modal hide">
                             <div class="modal-content">
                                 <span class="close" onclick="closeModal('myModal1')">&times;</span>
-                                <form class="centered-form-modal" th:action="@{/database/update}" method="post">
+                                <form class="centered-form-modal" th:action="@{/adminPanel/updateClient}" method="post">
                                     <div class="form-group">
-                                        <label for="update-email">Order email:</label>
-                                        <input th:placeholder="${emailModal}" type="email" id="update-email" name="email"/>
+                                        <label for="roleModal">Role:</label>
+                                        <input th:placeholder="${roleModal}" type="text" id="roleModal" name="roleModal"/>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="update-order-name">Order number:</label>
-                                        <input th:placeholder="${orderNumberModal}" type="text" id="update-order-name" name="orderNumber"/>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="update-description">Order description:</label>
-                                        <input th:placeholder="${descriptionModal}" type="text" id="update-description" name="description"/>
-                                    </div>
-                                    <input th:value="${idModal}" type="hidden" id="update-id" name="id"/>
+                                    <input th:value="${idModal}" type="hidden" id="idModal" name="idModal"/>
                                     <div>
                                         <button class="homePage-buttons" type="submit">Update</button>
                                     </div>
@@ -72,18 +64,18 @@
     <div id="myModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('myModal')">&times;</span>
-            <form class="centered-form-modal" th:action="@{/database/create}" method="post">
+            <form class="centered-form-modal" th:action="@{/adminPanel/createClient}" method="post">
                 <div class="form-group">
-                    <label for="order-email">Order email:</label>
-                    <input type="email" id="order-email" name="email" required/>
+                    <label for="userName">Username:</label>
+                    <input type="text" id="userName" name="userName" required/>
                 </div>
                 <div class="form-group">
-                    <label for="order-name">Order number:</label>
-                    <input type="text" id="order-name" name="orderNumber" required/>
+                    <label for="password">Password:</label>
+                    <input type="text" id="password" name="password" required/>
                 </div>
                 <div class="form-group">
-                    <label for="order-description"> Order description:</label>
-                    <input type="text" id="order-description" name="description"/>
+                    <label for="role"> Role:</label>
+                    <input type="text" id="role" name="role"/>
                 </div>
                 <div>
                     <button class="homePage-buttons" type="submit">Add</button>
@@ -114,4 +106,3 @@
 <script th:src="@{main.js}"></script>
 </body>
 </html>
->
