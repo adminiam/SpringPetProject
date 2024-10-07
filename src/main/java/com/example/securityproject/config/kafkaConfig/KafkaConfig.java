@@ -30,8 +30,7 @@ public class KafkaConfig {
     public KafkaTemplate<String, Message> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
-
-    // Конфигурация Consumer (потребителя)
+    
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
