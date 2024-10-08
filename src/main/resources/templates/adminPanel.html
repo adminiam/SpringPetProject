@@ -9,7 +9,7 @@
 <div th:if="${param.insertionError}" data-message="Fill in at least one field"></div>
 <div class="wrapper">
     <div class="content-homepage">
-        <h1>Tracking Numbers</h1>
+        <h1>Users</h1>
         <div class="tracking-container">
             <table class="tracking-table">
                 <thead>
@@ -103,6 +103,14 @@
         </div>
     </div>
 </div>
+<!-- Окно сообщений от Kafka, расположенное сбоку -->
+<div id="messageBox" class="message-box">
+    <h2>Сообщения от Kafka</h2>
+    <div id="messageContainer">
+        <!-- Здесь будут появляться сообщения -->
+    </div>
+</div>
+
 <script th:src="@{main.js}"></script>
 </body>
 </html>

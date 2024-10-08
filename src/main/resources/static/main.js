@@ -87,3 +87,28 @@ function toggleDropdown() {
     }
 }
 
+function fetchMessages() {
+    fetch('/getMessage')
+        .then(response => response.json())
+        .then(messages => {
+            const messageContainer = document.getElementById('messageContainer');
+            messageContainer.innerHTML = ''; // Очистка контейнера перед добавлением новых сообщений
+            messages.forEach(message => {
+                const newMessage = document.createElement('p');
+                newMessage.innerText = message;
+                messageContainer.appendChild(newMessage);
+            });
+        })
+        .catch(error => console.error('Ошибка при получении сообщений:', error));
+}
+
+// Функция для запуска периодического запроса сообщений
+function startPolling() {
+    fetchMessages(); // Первый запрос
+    setInterval(fetchMessages, 5000); // Повторяем запрос каждые 5 секунд
+}
+
+// Запуск при открытии страницы
+window.onload = function() {
+    startPolling(); // Начинаем получать сообщения при загрузке страницы
+};
