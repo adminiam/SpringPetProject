@@ -92,7 +92,7 @@ function fetchMessages() {
         .then(response => response.json())
         .then(messages => {
             const messageContainer = document.getElementById('messageContainer');
-            messageContainer.innerHTML = ''; // Очистка контейнера перед добавлением новых сообщений
+            messageContainer.innerHTML = '';
             messages.forEach(message => {
                 const newMessage = document.createElement('p');
                 newMessage.innerText = message;
@@ -101,14 +101,12 @@ function fetchMessages() {
         })
         .catch(error => console.error('Ошибка при получении сообщений:', error));
 }
-
-// Функция для запуска периодического запроса сообщений
 function startPolling() {
-    fetchMessages(); // Первый запрос
-    setInterval(fetchMessages, 5000); // Повторяем запрос каждые 5 секунд
+    fetchMessages();
+    setInterval(fetchMessages, 2000);
 }
 
 // Запуск при открытии страницы
 window.onload = function() {
-    startPolling(); // Начинаем получать сообщения при загрузке страницы
+    startPolling();
 };
