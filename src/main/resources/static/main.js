@@ -87,28 +87,90 @@ function toggleDropdown() {
     }
 }
 
-function fetchMessages() {
+    const displayedMessageIds = new Set();
+    const users = new Set();
+
+    function fetchMessages() {
     fetch('/getMessage')
         .then(response => response.json())
         .then(messages => {
-            const messageContainer = document.getElementById('messageContainer');
-            messageContainer.innerHTML = ''; // Очистка контейнера перед добавлением новых сообщений
+            const tabContainer = document.getElementById('userTabContainer');
+            const chatContainer = document.getElementById('userChatContainer');
+
             messages.forEach(message => {
-                const newMessage = document.createElement('p');
-                newMessage.innerText = message;
-                messageContainer.appendChild(newMessage);
+                const senderId = message.senderId;
+                const messageText = message.message;
+                const messageId = message.id;
+
+                if (!displayedMessageIds.has(messageId)) {
+                    if (!users.has(senderId)) {
+                        createNewTab(senderId, tabContainer);
+                        users.add(senderId);
+                    }
+
+                    let messageBox = document.getElementById('userChat-' + senderId);
+                    if (!messageBox) {
+                        messageBox = createNewChat(senderId);
+                        chatContainer.appendChild(messageBox);
+                    }
+
+                    const messageContainer = messageBox.querySelector('.messageContentContainer');
+                    const newMessage = document.createElement('p');
+                    newMessage.innerText = messageText;
+                    messageContainer.appendChild(newMessage);
+
+                    displayedMessageIds.add(messageId);
+                }
             });
         })
         .catch(error => console.error('Ошибка при получении сообщений:', error));
 }
 
-// Функция для запуска периодического запроса сообщений
-function startPolling() {
-    fetchMessages(); // Первый запрос
-    setInterval(fetchMessages, 5000); // Повторяем запрос каждые 5 секунд
+    function createNewTab(senderId, tabContainer) {
+    const newTab = document.createElement('button');
+    newTab.innerText = 'Пользователь ' + senderId;
+    newTab.classList.add('userTab');
+    newTab.onclick = function() {
+    switchChat(senderId);
+};
+    tabContainer.appendChild(newTab);
 }
 
-// Запуск при открытии страницы
-window.onload = function() {
-    startPolling(); // Начинаем получать сообщения при загрузке страницы
+    function createNewChat(senderId) {
+    const messageBox = document.createElement('div');
+    messageBox.id = 'userChat-' + senderId;
+    messageBox.classList.add('userMessageBox');
+    messageBox.style.display = 'none';
+
+    const chatHeader = document.createElement('h2');
+    chatHeader.innerText = 'Чат с пользователем: ' + senderId;
+
+    const messageContainer = document.createElement('div');
+    messageContainer.classList.add('messageContentContainer');
+
+    messageBox.appendChild(chatHeader);
+    messageBox.appendChild(messageContainer);
+
+    return messageBox;
+}
+
+    function switchChat(senderId) {
+    document.querySelectorAll('.userMessageBox').forEach(box => {
+        box.style.display = 'none';
+    });
+
+    const selectedChat = document.getElementById('userChat-' + senderId);
+    if (selectedChat) {
+    selectedChat.style.display = 'block';
+}
+}
+
+    function startPolling() {
+    fetchMessages();
+    setInterval(fetchMessages, 2000);
+}
+
+    window.onload = function() {
+    startPolling();
 };
+

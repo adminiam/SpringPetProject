@@ -21,7 +21,7 @@
                 </thead>
                 <tbody>
                 <tr th:if="${#lists.isEmpty(clients)}">
-                    <td colspan="5" class="no-data">No tracking numbers available</td>
+                    <td colspan="5" class="no-data">No users available</td>
                 </tr>
                 <tr th:each="client : ${clients}">
                     <td th:text="${client.loginName}"></td>
@@ -103,13 +103,14 @@
         </div>
     </div>
 </div>
-<!-- Окно сообщений от Kafka, расположенное сбоку -->
-<div id="messageBox" class="message-box">
-    <h2>Сообщения от Kafka</h2>
-    <div id="messageContainer">
-        <!-- Здесь будут появляться сообщения -->
-    </div>
+<div id="userTabContainer" class="tab-container">
+    <!-- Вкладки для пользователей появятся здесь -->
 </div>
+
+<div id="userChatContainer" class="chat-container">
+    <!-- Чаты с пользователями появятся здесь -->
+</div>
+
 
 <script th:src="@{main.js}"></script>
 </body>

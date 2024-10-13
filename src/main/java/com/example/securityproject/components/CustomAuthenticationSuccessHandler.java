@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 
 @Component
@@ -17,6 +18,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     JpaClientRepo jpaClientRepo;
     @Autowired
     UserContext userContext;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
@@ -28,6 +30,10 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         userContext.setRole(clientData.getRole());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         SecurityContextHolder.getContext().setAuthentication(userContext);
-        response.sendRedirect("home");
+        if (userContext.getRole().equals("USER")) {
+            response.sendRedirect("home");
+        } else {
+            response.sendRedirect("adminPanel");
+        }
     }
 }
