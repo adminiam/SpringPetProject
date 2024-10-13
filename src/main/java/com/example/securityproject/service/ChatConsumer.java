@@ -21,6 +21,6 @@ public class ChatConsumer {
         Message parsedMessage = gson.fromJson(message, Message.class);
         list.add(parsedMessage);
         System.out.println(parsedMessage.getMessage());
-        System.out.println(parsedMessage.getId());
+        System.out.println(parsedMessage.getSenderId());
     }
 }

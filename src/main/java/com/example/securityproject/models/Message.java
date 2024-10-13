@@ -1,15 +1,14 @@
 package com.example.securityproject.models;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.Data;
 
 import java.util.UUID;
 
-@Getter
-@Setter
+@Data
+@Builder
 public class Message {
     private UUID id;
     private String message;
     private UUID senderId;
-    private UUID chatRoomId;
 }
