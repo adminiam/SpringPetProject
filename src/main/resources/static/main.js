@@ -126,15 +126,24 @@ function toggleDropdown() {
         .catch(error => console.error('Ошибка при получении сообщений:', error));
 }
 
-    function createNewTab(senderId, tabContainer) {
-    const newTab = document.createElement('button');
-    newTab.innerText = 'Пользователь ' + senderId;
-    newTab.classList.add('userTab');
-    newTab.onclick = function() {
-    switchChat(senderId);
-};
-    tabContainer.appendChild(newTab);
+function createNewTab(senderId, tabContainer) {
+    fetch('/getSenderName?senderId=' + senderId)
+        .then(response => response.text())
+        .then(userName => {
+            const newTab = document.createElement('button');
+            newTab.innerText = 'Пользователь ' + userName;
+            newTab.classList.add('userTab');
+
+            newTab.onclick = function() {
+                switchChat(senderId);
+            };
+            tabContainer.appendChild(newTab);
+        })
+        .catch(error => {
+            console.error('Error fetching user name for tab:', error);
+        });
 }
+
 
     function createNewChat(senderId) {
     const messageBox = document.createElement('div');

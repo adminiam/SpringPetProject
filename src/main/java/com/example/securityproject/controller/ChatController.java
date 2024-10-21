@@ -13,13 +13,14 @@ public class ChatController {
     private ChatProducer chatProducer;
     @Autowired
     private RedisService redisService;
+
     @GetMapping("/send")
-    public String sendMessage(@RequestParam String message){
+    public String sendMessage(@RequestParam String message) {
         return chatProducer.sendMessage(message);
     }
 
     @GetMapping("/show")
-    public String show(){
+    public String show() {
         return redisService.showMessage();
     }
 
