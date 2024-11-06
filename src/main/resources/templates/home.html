@@ -50,7 +50,7 @@
 <body id="home-page">
 <div class="message-box">
     <h3>Send a message</h3>
-    <form th:action="@{/send}" method="get">
+    <form th:action="@{/sendClient}" method="post">
         <label for="message">Your message:</label>
         <textarea id="message" name="message" required></textarea>
         <button type="submit">Send</button>
