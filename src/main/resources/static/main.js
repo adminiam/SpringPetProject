@@ -91,7 +91,7 @@ function toggleDropdown() {
     const users = new Set();
 
     function fetchMessages() {
-    fetch('/getMessage')
+    fetch('/getMessage?id=49ec45e2-5026-4dcb-9423-b34bd7e9a845')
         .then(response => response.json())
         .then(messages => {
             const tabContainer = document.getElementById('userTabContainer');
@@ -126,17 +126,49 @@ function toggleDropdown() {
         .catch(error => console.error('Ошибка при получении сообщений:', error));
 }
 
-    function createNewTab(senderId, tabContainer) {
-    const newTab = document.createElement('button');
-    newTab.innerText = 'Пользователь ' + senderId;
-    newTab.classList.add('userTab');
-    newTab.onclick = function() {
-    switchChat(senderId);
-};
-    tabContainer.appendChild(newTab);
+// Создаем новую вкладку для пользователя
+function createNewTab(senderId, tabContainer) {
+    fetch('/getSenderName?senderId=' + senderId)
+        .then(response => response.text())
+        .then(userName => {
+            const newTab = document.createElement('button');
+            newTab.innerText = 'Пользователь ' + userName;
+            newTab.classList.add('userTab');
+
+            newTab.onclick = function() {
+                switchChat(senderId); // Передаем senderId в switchChat
+            };
+            tabContainer.appendChild(newTab);
+        })
+        .catch(error => {
+            console.error('Error fetching user name for tab:', error);
+        });
 }
 
-    function createNewChat(senderId) {
+// Функция для переключения чата
+function switchChat(senderId) {
+    // Скрываем все чаты
+    document.querySelectorAll('.userMessageBox').forEach(box => {
+        box.style.display = 'none';
+    });
+
+    // Показываем выбранный чат
+    const selectedChat = document.getElementById('userChat-' + senderId);
+    if (selectedChat) {
+        selectedChat.style.display = 'block';
+    }
+
+    // Обновляем значение senderId в скрытом поле формы
+    const senderIdInput = document.getElementById('senderIdInput');
+    senderIdInput.value = senderId;
+
+    // Показываем форму отправки сообщения
+    const messageForm = document.getElementById('messageForm');
+    messageForm.style.display = 'flex';
+}
+
+// Создаем новый чат
+function createNewChat(senderId) {
     const messageBox = document.createElement('div');
     messageBox.id = 'userChat-' + senderId;
     messageBox.classList.add('userMessageBox');
@@ -148,29 +180,20 @@ function toggleDropdown() {
     const messageContainer = document.createElement('div');
     messageContainer.classList.add('messageContentContainer');
 
+    // Добавляем заголовок и контейнер с сообщениями
     messageBox.appendChild(chatHeader);
     messageBox.appendChild(messageContainer);
 
-    return messageBox;
+    document.getElementById('userChatContainer').appendChild(messageBox);
 }
 
-    function switchChat(senderId) {
-    document.querySelectorAll('.userMessageBox').forEach(box => {
-        box.style.display = 'none';
-    });
-
-    const selectedChat = document.getElementById('userChat-' + senderId);
-    if (selectedChat) {
-    selectedChat.style.display = 'block';
-}
-}
-
-    function startPolling() {
+// Старт опроса сообщений
+function startPolling() {
     fetchMessages();
     setInterval(fetchMessages, 2000);
 }
 
-    window.onload = function() {
+// Инициализация
+window.onload = function() {
     startPolling();
 };
-

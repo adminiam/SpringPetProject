@@ -15,12 +15,24 @@ public class ChatProducer {
     private KafkaTemplate<String, Message> kafkaTemplate;
     @Autowired
     private RedisService redisService;
-@Autowired
-private UserContext userContext;
+    @Autowired
+    private UserContext userContext;
+
+    public String sendMessage(String message, UUID receiverId) {
+        //todo change type of controller
+        try {
+            Message msg = Message.builder().id(UUID.randomUUID()).message(message).senderId(userContext.getId()).senderId(userContext.getId()).receiverId(UUID.randomUUID()).build();
+            kafkaTemplate.send("chat_topic", msg);
+            redisService.saveMessage(msg.getSenderId(), msg);
+        } catch (Exception e) {
+            throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
+        }
+        return "adminPanel";
+    }
 
     public String sendMessage(String message) {
         try {
-            Message msg = Message.builder().id(UUID.randomUUID()).message(message).senderId(userContext.getId()).build();
+            Message msg = Message.builder().id(UUID.randomUUID()).message(message).senderId(userContext.getId()).receiverId(UUID.fromString("49ec45e2-5026-4dcb-9423-b34bd7e9a845")).build();
             kafkaTemplate.send("chat_topic", msg);
             redisService.saveMessage(msg.getSenderId(), msg);
         } catch (Exception e) {
@@ -28,5 +40,6 @@ private UserContext userContext;
         }
         return "home";
     }
+
 }
 

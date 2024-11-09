@@ -103,13 +103,15 @@
         </div>
     </div>
 </div>
-<div id="userTabContainer" class="tab-container">
-    <!-- Вкладки для пользователей появятся здесь -->
-</div>
+<div id="userTabContainer" class="tab-container"></div>
+<div id="userChatContainer" class="chat-container"></div>
 
-<div id="userChatContainer" class="chat-container">
-    <!-- Чаты с пользователями появятся здесь -->
-</div>
+<form th:action="@{/send}" method="post" class="message-input-container" id="messageForm" style="display: none;">
+    <input type="hidden" name="senderId" id="senderIdInput" value="">
+    <input type="text" id="messageInput" name="message" placeholder="Введите сообщение..." required />
+    <button type="submit" id="sendMessageButton">Отправить</button>
+</form>
+
 
 
 <script th:src="@{main.js}"></script>
