@@ -91,7 +91,7 @@ function toggleDropdown() {
     const users = new Set();
 
     function fetchMessages() {
-    fetch('/getMessage')
+    fetch('/getMessage?id=49ec45e2-5026-4dcb-9423-b34bd7e9a845')
         .then(response => response.json())
         .then(messages => {
             const tabContainer = document.getElementById('userTabContainer');

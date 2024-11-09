@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 public class ChatRestController {
@@ -18,8 +20,11 @@ public class ChatRestController {
     UserService userService;
 
     @GetMapping("/getMessage")
-    public List<Message> getMessage(){
-        return chatConsumer.getList();
+    public List<Message> getMessage(@RequestParam String id){
+        return chatConsumer.getList()
+                .stream()
+                .filter(message -> message.getReceiverId().equals(UUID.fromString(id)))
+                .collect(Collectors.toList());
     }
     @GetMapping("/getSenderName")
     public String getSenderName(@RequestParam String senderId) {
