@@ -95,7 +95,10 @@
                     <form id="first-dropdown-item" th:action="@{/logout}" method="post">
                         <button type="submit" class="homePage-buttons" id="header-first-leftButton">Logout</button>
                     </form>
-                    <form th:action="@{/database/deleteAll}" method="post">
+                    <form th:action="@{/home}" method="get">
+                        <button type="submit" class="homePage-buttons">Go Home</button>
+                    </form>
+                    <form th:action="@{/adminPanel/deleteAdmins}" method="post">
                         <button type="submit" class="homePage-buttons">Delete All</button>
                     </form>
                 </div>
