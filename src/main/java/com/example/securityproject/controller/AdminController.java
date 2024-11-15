@@ -37,8 +37,11 @@ public class AdminController {
         return adminService.updateClient(idModal,roleModal);
     }
     @PostMapping("deleteClient")
-    public RedirectView deleteOrder(@RequestParam String userName) {
+    public RedirectView deleteClient(@RequestParam String userName) {
         return adminService.deleteClient(userName);
     }
-
+    @PostMapping("deleteAdmins")
+    public RedirectView deleteAdmins() {
+        return adminService.deleteAdmins();
+    }
 }

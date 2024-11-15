@@ -96,4 +96,8 @@ public class AdminService {
             throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
         }
     }
+    public RedirectView deleteAdmins(){
+        jpaClientRepo.deleteAllAdmins();
+        return new RedirectView("/adminPanel", false);
+    }
 }
