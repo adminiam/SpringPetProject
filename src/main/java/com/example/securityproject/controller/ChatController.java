@@ -18,8 +18,8 @@ public class ChatController {
     private RedisService redisService;
 
     @PostMapping("/send")
-    public String sendMessage(@RequestParam String message, @RequestParam UUID senderId) {
-        return chatProducer.sendMessage(message,senderId);
+    public String sendMessage(@RequestParam String message, @RequestParam String receiverId) {
+        return chatProducer.sendMessage(message,receiverId);
     }
     @PostMapping("/sendClient")
     public String sendMessageClient(@RequestParam String message) {

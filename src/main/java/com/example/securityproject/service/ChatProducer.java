@@ -18,10 +18,10 @@ public class ChatProducer {
     @Autowired
     private UserContext userContext;
 
-    public String sendMessage(String message, UUID receiverId) {
+    public String sendMessage(String message, String receiverId) {
         //todo change type of controller
         try {
-            Message msg = Message.builder().id(UUID.randomUUID()).message(message).senderId(userContext.getId()).senderId(userContext.getId()).receiverId(UUID.randomUUID()).build();
+            Message msg = Message.builder().id(UUID.randomUUID()).message(message).senderId(userContext.getId()).senderId(userContext.getId()).receiverId(UUID.fromString(receiverId)).build();
             kafkaTemplate.send("chat_topic", msg);
             redisService.saveMessage(msg.getSenderId(), msg);
         } catch (Exception e) {

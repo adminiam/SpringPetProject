@@ -22,5 +22,6 @@ public class ChatConsumer {
         list.add(parsedMessage);
         System.out.println(parsedMessage.getMessage());
         System.out.println(parsedMessage.getSenderId());
+        System.out.println(parsedMessage.getReceiverId());
     }
 }

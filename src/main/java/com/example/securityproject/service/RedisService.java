@@ -44,6 +44,7 @@ public class RedisService {
         return messages;
     }
     public String showMessage(){
+        //todo adapt for all users
         try {
             List<Message> messages = getMessages(UUID.fromString("411a50e5-694f-4857-b92e-8fbc6e8237ac"));
             for (Message message : messages) {
