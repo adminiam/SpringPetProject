@@ -15,8 +15,6 @@ public class ChatProducer {
     @Autowired
     private KafkaTemplate<String, Message> kafkaTemplate;
     @Autowired
-    private RedisService redisService;
-    @Autowired
     private UserContext userContext;
 
     public ResponseEntity<?> sendMessage(String message, String receiverId) {
@@ -29,7 +27,6 @@ public class ChatProducer {
                     .build();
 
             kafkaTemplate.send("chat_topic", receiverId, msg);
-            redisService.saveMessage(msg.getSenderId(), msg);
 
             return ResponseEntity.ok("Message sent successfully");
         } catch (Exception e) {
@@ -41,7 +38,6 @@ public class ChatProducer {
         try {
             Message msg = Message.builder().id(UUID.randomUUID()).message(message).senderId(userContext.getId()).receiverId(UUID.fromString("49ec45e2-5026-4dcb-9423-b34bd7e9a845")).build();
             kafkaTemplate.send("chat_topic", String.valueOf(msg.getSenderId()),msg);
-            redisService.saveMessage(msg.getSenderId(), msg);
         } catch (Exception e) {
             throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
         }

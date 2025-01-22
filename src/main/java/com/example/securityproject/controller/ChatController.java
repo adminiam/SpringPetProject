@@ -2,7 +2,6 @@ package com.example.securityproject.controller;
 
 import com.example.securityproject.components.UserContext;
 import com.example.securityproject.service.ChatProducer;
-import com.example.securityproject.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -14,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ChatController {
     @Autowired
     private ChatProducer chatProducer;
-    @Autowired
-    private RedisService redisService;
     @Autowired
     private UserContext userContext;
 
@@ -30,11 +27,6 @@ public class ChatController {
     @GetMapping("/getContext")
     public UserContext getContext() {
         return userContext;
-    }
-//todo
-    @GetMapping("/show")
-    public String show() {
-        return redisService.showMessage();
     }
 
 }

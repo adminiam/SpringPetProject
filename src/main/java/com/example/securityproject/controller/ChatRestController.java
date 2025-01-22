@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -19,8 +20,12 @@ public class ChatRestController {
     UserService userService;
 
     @GetMapping("/getMessage")
-    public Map<String, Message> getMessage(){
+    public List<Map<String,Message>> getMessage(){
         return chatConsumer.getList();
+    }
+    @GetMapping("/getMessageClient")
+    public List<Map<String,Message>> getMessageClient(@RequestParam String key){
+        return chatConsumer.consume(key);
     }
     @GetMapping("/getSenderName")
     public String getSenderName(@RequestParam String senderId) {

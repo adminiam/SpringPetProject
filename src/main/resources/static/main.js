@@ -97,29 +97,34 @@ function fetchMessages() {
             const tabContainer = document.getElementById('userTabContainer');
             const chatContainer = document.getElementById('userChatContainer');
 
-            Object.entries(messages).forEach(([key, message]) => {
-                const senderId = key;
-                const messageText = message.message;
-                const messageId = message.id;
+            // Итерируем по списку, а не по объекту
+            messages.forEach(map => {
+                // В каждой карте (Map) содержится один элемент с ключом и сообщением
+                for (let key in map) {
+                    const message = map[key];
+                    const senderId = key;
+                    const messageText = message.message;
+                    const messageId = message.id;
 
-                if (!displayedMessageIds.has(messageId)) {
-                    if (!users.has(senderId)) {
-                        createNewTab(senderId, tabContainer);
-                        users.add(senderId);
+                    if (!displayedMessageIds.has(messageId)) {
+                        if (!users.has(senderId)) {
+                            createNewTab(senderId, tabContainer);
+                            users.add(senderId);
+                        }
+
+                        let messageBox = document.getElementById('userChat-' + senderId);
+                        if (!messageBox) {
+                            messageBox = createNewChat(senderId);
+                            chatContainer.appendChild(messageBox);
+                        }
+
+                        const messageContainer = messageBox.querySelector('.messageContentContainer');
+                        const newMessage = document.createElement('p');
+                        newMessage.innerText = messageText;
+                        messageContainer.appendChild(newMessage);
+
+                        displayedMessageIds.add(messageId);
                     }
-
-                    let messageBox = document.getElementById('userChat-' + senderId);
-                    if (!messageBox) {
-                        messageBox = createNewChat(senderId);
-                        chatContainer.appendChild(messageBox);
-                    }
-
-                    const messageContainer = messageBox.querySelector('.messageContentContainer');
-                    const newMessage = document.createElement('p');
-                    newMessage.innerText = messageText;
-                    messageContainer.appendChild(newMessage);
-
-                    displayedMessageIds.add(messageId);
                 }
             });
         })
