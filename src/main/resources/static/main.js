@@ -90,15 +90,15 @@ function toggleDropdown() {
     const displayedMessageIds = new Set();
     const users = new Set();
 
-    function fetchMessages() {
-    fetch('/getMessage?id=49ec45e2-5026-4dcb-9423-b34bd7e9a845')
+function fetchMessages() {
+    fetch('/getMessage')
         .then(response => response.json())
         .then(messages => {
             const tabContainer = document.getElementById('userTabContainer');
             const chatContainer = document.getElementById('userChatContainer');
 
-            messages.forEach(message => {
-                const senderId = message.senderId;
+            Object.entries(messages).forEach(([key, message]) => {
+                const senderId = key;
                 const messageText = message.message;
                 const messageId = message.id;
 
@@ -126,6 +126,47 @@ function toggleDropdown() {
         .catch(error => console.error('Ошибка при получении сообщений:', error));
 }
 
+document.getElementById('messageForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const messageInput = document.getElementById('messageInput');
+    const messageText = messageInput.value.trim();
+    const receiverId = document.getElementById('receiverIdInput').value;
+
+    if (messageText !== '') {
+        const formData = new FormData(this);
+
+        try {
+            const response = await fetch(this.action, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const messageBox = document.getElementById('userChat-' + receiverId);
+
+                if (messageBox) {
+                    const messageContainer = messageBox.querySelector('.messageContentContainer');
+                    if (messageContainer) {
+                        const messageDiv = document.createElement('p');
+                        messageDiv.innerText = messageText;
+                        messageContainer.scrollTop = messageContainer.scrollHeight;
+                        messageInput.value = '';
+                        console.log('Сообщение успешно добавлено в чат пользователя');
+                    } else {
+                        console.error('Контейнер сообщений не найден в чате');
+                    }
+                } else {
+                    console.error('Чат пользователя не найден');
+                }
+            } else {
+                console.error('Ошибка при отправке сообщения:', response.status);
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+        }
+    }
+});
 function createNewTab(senderId, tabContainer) {
     fetch('/getSenderName?senderId=' + senderId)
         .then(response => response.text())
@@ -135,7 +176,7 @@ function createNewTab(senderId, tabContainer) {
             newTab.classList.add('userTab');
 
             newTab.onclick = function() {
-                switchChat(senderId); // Передаем senderId в switchChat
+                switchChat(senderId);
             };
             tabContainer.appendChild(newTab);
         })
@@ -184,7 +225,7 @@ function createNewChat(senderId) {
 
 function startPolling() {
     fetchMessages();
-    setInterval(fetchMessages, 2000);
+    setInterval(fetchMessages, 1000);
 }
 
 window.onload = function() {

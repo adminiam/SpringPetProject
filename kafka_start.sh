@@ -16,10 +16,10 @@ sleep 2
 
 osascript -e 'tell application "Terminal"
     activate
-    do script "cd /Users/vladimirtodoshchak/Downloads/kafka_2.13-3.7.0/bin; ./kafka-topics.sh --bootstrap-server kafka:9092 --topic chat_topic --create --partitions 1 --replication-factor 1"
+    do script "cd /Users/vladimirtodoshchak/Downloads/kafka_2.13-3.7.0/bin; ./kafka-topics.sh --bootstrap-server kafka:9092 --topic chat_topic --create --partitions 1 --replication-factor 1; exit"
 end tell'
 
 osascript -e 'tell application "Terminal"
     activate
-    do script "brew services start redis"
+    do script "brew services start redis; exit"
 end tell'

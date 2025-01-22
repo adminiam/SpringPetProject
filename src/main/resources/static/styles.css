@@ -538,3 +538,10 @@ label {
 .message-input-container button:hover {
     background-color: #45a049;
 }
+
+.message {
+    padding: 8px 12px;
+    margin: 5px 0;
+    border-radius: 4px;
+    word-wrap: break-word;
+}
