@@ -20,13 +20,15 @@ public class ChatRestController {
     UserService userService;
 
     @GetMapping("/getMessage")
-    public List<Map<String,Message>> getMessage(){
-        return chatConsumer.getList();
+    public List<Map<String, Message>> getMessage() {
+        return chatConsumer.consumeAllMessages();
     }
+
     @GetMapping("/getMessageClient")
-    public List<Map<String,Message>> getMessageClient(@RequestParam String key){
-        return chatConsumer.consume(key);
+    public List<Map<String, Message>> getMessageClient(@RequestParam String key) {
+        return chatConsumer.consumeExactUser(key);
     }
+
     @GetMapping("/getSenderName")
     public String getSenderName(@RequestParam String senderId) {
         return userService.getUserName(senderId);

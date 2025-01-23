@@ -2,36 +2,47 @@ package com.example.securityproject.service;
 
 import com.example.securityproject.models.Message;
 import com.google.gson.Gson;
-import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.springframework.kafka.annotation.KafkaListener;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ChatConsumer {
     private final Gson gson = new Gson();
-    @Getter
-    private final List<Map<String, Message>> list = new ArrayList<>();
+    private final KafkaConsumer<String, String> kafkaConsumer;
 
-    @KafkaListener(topics = "chat_topic", groupId = "myGroup")
-    public void listen(ConsumerRecord<String, String> record) {
-        String key = record.key();
-        String message = record.value();
-        Map<String, Message> map = new HashMap<>();
-        Message parsedMessage = gson.fromJson(message, Message.class);
-        map.put(key, parsedMessage);
-        list.add(map);
-        System.out.println(parsedMessage.getMessage());
-        System.out.println(parsedMessage.getSenderId());
-        System.out.println(parsedMessage.getReceiverId());
+    public List<Map<String, Message>> consumeAllMessages() {
+        String topic = "chat_topic";
+        kafkaConsumer.subscribe(Collections.singletonList(topic));
+        kafkaConsumer.poll(Duration.ZERO);
+        kafkaConsumer.seekToBeginning(kafkaConsumer.assignment());
+
+        List<Map<String, Message>> allMessages = new ArrayList<>();
+        ConsumerRecords<String, String> records = kafkaConsumer.poll(Duration.ofSeconds(10));
+
+        for (ConsumerRecord<String, String> record : records) {
+            String key = record.key();
+            String value = record.value();
+            Message message = gson.fromJson(value, Message.class);
+
+            Map<String, Message> map = new HashMap<>();
+            map.put(key, message);
+            allMessages.add(map);
+        }
+        return allMessages;
     }
 
-    public List<Map<String,Message>>consume(String key) {
-        return list.stream()
+    public List<Map<String, Message>> consumeExactUser(String key) {
+        List<Map<String, Message>> allMessages = consumeAllMessages();
+
+        return allMessages.stream()
                 .filter(map -> map.containsKey(key))
-                .collect(Collectors.toList());
+                .toList();
     }
 }
