@@ -96,10 +96,7 @@ function fetchMessages() {
         .then(messages => {
             const tabContainer = document.getElementById('userTabContainer');
             const chatContainer = document.getElementById('userChatContainer');
-
-            // Итерируем по списку, а не по объекту
             messages.forEach(map => {
-                // В каждой карте (Map) содержится один элемент с ключом и сообщением
                 for (let key in map) {
                     const message = map[key];
                     const senderId = key;

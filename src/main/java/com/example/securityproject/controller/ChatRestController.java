@@ -17,7 +17,7 @@ public class ChatRestController {
     @Autowired
     private ChatConsumer chatConsumer;
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @GetMapping("/getMessage")
     public List<Map<String, Message>> getMessage() {

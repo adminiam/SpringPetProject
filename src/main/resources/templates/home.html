@@ -20,9 +20,22 @@
             margin: 0 0 10px;
         }
 
-        .message-box label {
-            display: block;
-            margin-bottom: 5px;
+        .message-display {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            font-size: 14px;
+        }
+
+        .message {
+            margin-bottom: 8px;
+        }
+
+        .message-author {
+            font-weight: bold;
         }
 
         .message-box textarea {
@@ -49,8 +62,10 @@
 </head>
 <body id="home-page">
 <div class="message-box">
-    <h3>Send a message</h3>
-    <form th:action="@{/sendClient}" method="post">
+    <h3>Chat</h3>
+    <div class="message-display" id="message-display">
+    </div>
+    <form th:action="@{/sendClient}" method="post" onsubmit="addMessage(event)">
         <label for="message">Your message:</label>
         <textarea id="message" name="message" required></textarea>
         <button type="submit">Send</button>
@@ -168,5 +183,6 @@
     </div>
 </div>
 <script th:src="@{main.js}"></script>
+<script th:src="@{home.js}"></script>
 </body>
 </html>
