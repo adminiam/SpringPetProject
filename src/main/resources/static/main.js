@@ -90,43 +90,85 @@ function toggleDropdown() {
     const displayedMessageIds = new Set();
     const users = new Set();
 
-    function fetchMessages() {
-    fetch('/getMessage?id=49ec45e2-5026-4dcb-9423-b34bd7e9a845')
+function fetchMessages() {
+    fetch('/getMessage')
         .then(response => response.json())
         .then(messages => {
             const tabContainer = document.getElementById('userTabContainer');
             const chatContainer = document.getElementById('userChatContainer');
+            messages.forEach(map => {
+                for (let key in map) {
+                    const message = map[key];
+                    const senderId = key;
+                    const messageText = message.message;
+                    const messageId = message.id;
 
-            messages.forEach(message => {
-                const senderId = message.senderId;
-                const messageText = message.message;
-                const messageId = message.id;
+                    if (!displayedMessageIds.has(messageId)) {
+                        if (!users.has(senderId)) {
+                            createNewTab(senderId, tabContainer);
+                            users.add(senderId);
+                        }
 
-                if (!displayedMessageIds.has(messageId)) {
-                    if (!users.has(senderId)) {
-                        createNewTab(senderId, tabContainer);
-                        users.add(senderId);
+                        let messageBox = document.getElementById('userChat-' + senderId);
+                        if (!messageBox) {
+                            messageBox = createNewChat(senderId);
+                            chatContainer.appendChild(messageBox);
+                        }
+
+                        const messageContainer = messageBox.querySelector('.messageContentContainer');
+                        const newMessage = document.createElement('p');
+                        newMessage.innerText = messageText;
+                        messageContainer.appendChild(newMessage);
+
+                        displayedMessageIds.add(messageId);
                     }
-
-                    let messageBox = document.getElementById('userChat-' + senderId);
-                    if (!messageBox) {
-                        messageBox = createNewChat(senderId);
-                        chatContainer.appendChild(messageBox);
-                    }
-
-                    const messageContainer = messageBox.querySelector('.messageContentContainer');
-                    const newMessage = document.createElement('p');
-                    newMessage.innerText = messageText;
-                    messageContainer.appendChild(newMessage);
-
-                    displayedMessageIds.add(messageId);
                 }
             });
         })
         .catch(error => console.error('Ошибка при получении сообщений:', error));
 }
 
-// Создаем новую вкладку для пользователя
+document.getElementById('messageForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const messageInput = document.getElementById('messageInput');
+    const messageText = messageInput.value.trim();
+    const receiverId = document.getElementById('receiverIdInput').value;
+
+    if (messageText !== '') {
+        const formData = new FormData(this);
+
+        try {
+            const response = await fetch(this.action, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const messageBox = document.getElementById('userChat-' + receiverId);
+
+                if (messageBox) {
+                    const messageContainer = messageBox.querySelector('.messageContentContainer');
+                    if (messageContainer) {
+                        const messageDiv = document.createElement('p');
+                        messageDiv.innerText = messageText;
+                        messageContainer.scrollTop = messageContainer.scrollHeight;
+                        messageInput.value = '';
+                        console.log('Сообщение успешно добавлено в чат пользователя');
+                    } else {
+                        console.error('Контейнер сообщений не найден в чате');
+                    }
+                } else {
+                    console.error('Чат пользователя не найден');
+                }
+            } else {
+                console.error('Ошибка при отправке сообщения:', response.status);
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+        }
+    }
+});
 function createNewTab(senderId, tabContainer) {
     fetch('/getSenderName?senderId=' + senderId)
         .then(response => response.text())
@@ -136,7 +178,7 @@ function createNewTab(senderId, tabContainer) {
             newTab.classList.add('userTab');
 
             newTab.onclick = function() {
-                switchChat(senderId); // Передаем senderId в switchChat
+                switchChat(senderId);
             };
             tabContainer.appendChild(newTab);
         })
@@ -145,29 +187,26 @@ function createNewTab(senderId, tabContainer) {
         });
 }
 
-// Функция для переключения чата
 function switchChat(senderId) {
-    // Скрываем все чаты
     document.querySelectorAll('.userMessageBox').forEach(box => {
         box.style.display = 'none';
     });
 
-    // Показываем выбранный чат
     const selectedChat = document.getElementById('userChat-' + senderId);
     if (selectedChat) {
         selectedChat.style.display = 'block';
     }
 
-    // Обновляем значение senderId в скрытом поле формы
     const senderIdInput = document.getElementById('senderIdInput');
     senderIdInput.value = senderId;
 
-    // Показываем форму отправки сообщения
+    const receiverIdInput = document.getElementById('receiverIdInput');
+    receiverIdInput.value = senderId;
+
     const messageForm = document.getElementById('messageForm');
     messageForm.style.display = 'flex';
 }
 
-// Создаем новый чат
 function createNewChat(senderId) {
     const messageBox = document.createElement('div');
     messageBox.id = 'userChat-' + senderId;
@@ -180,20 +219,17 @@ function createNewChat(senderId) {
     const messageContainer = document.createElement('div');
     messageContainer.classList.add('messageContentContainer');
 
-    // Добавляем заголовок и контейнер с сообщениями
     messageBox.appendChild(chatHeader);
     messageBox.appendChild(messageContainer);
 
     document.getElementById('userChatContainer').appendChild(messageBox);
 }
 
-// Старт опроса сообщений
 function startPolling() {
     fetchMessages();
-    setInterval(fetchMessages, 2000);
+    setInterval(fetchMessages, 1000);
 }
 
-// Инициализация
 window.onload = function() {
     startPolling();
 };

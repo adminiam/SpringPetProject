@@ -111,9 +111,11 @@
 
 <form th:action="@{/send}" method="post" class="message-input-container" id="messageForm" style="display: none;">
     <input type="hidden" name="senderId" id="senderIdInput" value="">
+    <input type="hidden" name="receiverId" id="receiverIdInput" value="">
     <input type="text" id="messageInput" name="message" placeholder="Введите сообщение..." required />
     <button type="submit" id="sendMessageButton">Отправить</button>
 </form>
+
 
 
 

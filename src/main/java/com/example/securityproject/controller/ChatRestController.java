@@ -9,23 +9,26 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.Map;
+
 
 @RestController
 public class ChatRestController {
     @Autowired
     private ChatConsumer chatConsumer;
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @GetMapping("/getMessage")
-    public List<Message> getMessage(@RequestParam String id){
-        return chatConsumer.getList()
-                .stream()
-                .filter(message -> message.getReceiverId().equals(UUID.fromString(id)))
-                .collect(Collectors.toList());
+    public List<Map<String, Message>> getMessage() {
+        return chatConsumer.consumeAllMessages();
     }
+
+    @GetMapping("/getMessageClient")
+    public List<Map<String, Message>> getMessageClient(@RequestParam String key) {
+        return chatConsumer.consumeExactUser(key);
+    }
+
     @GetMapping("/getSenderName")
     public String getSenderName(@RequestParam String senderId) {
         return userService.getUserName(senderId);

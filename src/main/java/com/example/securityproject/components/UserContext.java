@@ -7,18 +7,15 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
-
 import org.springframework.context.annotation.Scope;
-import org.springframework.web.context.WebApplicationContext;
 
 @Getter
 @Setter
 @Component
-@Scope(value = WebApplicationContext.SCOPE_SESSION, proxyMode = ScopedProxyMode.TARGET_CLASS)
+@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class UserContext implements Authentication {
     private UUID id;
     private String name;
