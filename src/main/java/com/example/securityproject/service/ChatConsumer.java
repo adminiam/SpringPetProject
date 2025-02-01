@@ -3,46 +3,76 @@ package com.example.securityproject.service;
 import com.example.securityproject.models.Message;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ChatConsumer {
+    private final ConsumerFactory<String, String> consumerFactory;
     private final Gson gson = new Gson();
-    private final KafkaConsumer<String, String> kafkaConsumer;
+    private static final String TOPIC = "chat_topic";
+    private static final Duration POLL_TIMEOUT = Duration.ofSeconds(10);
 
     public List<Map<String, Message>> consumeAllMessages() {
-        String topic = "chat_topic";
-        kafkaConsumer.subscribe(Collections.singletonList(topic));
-        kafkaConsumer.poll(Duration.ZERO);
-        kafkaConsumer.seekToBeginning(kafkaConsumer.assignment());
-
         List<Map<String, Message>> allMessages = new ArrayList<>();
-        ConsumerRecords<String, String> records = kafkaConsumer.poll(Duration.ofSeconds(10));
 
-        for (ConsumerRecord<String, String> record : records) {
-            String key = record.key();
-            String value = record.value();
-            Message message = gson.fromJson(value, Message.class);
+        try (KafkaConsumer<String, String> consumer = (KafkaConsumer<String, String>) consumerFactory.createConsumer()) {
+            consumer.subscribe(Collections.singletonList(TOPIC));
 
-            Map<String, Message> map = new HashMap<>();
-            map.put(key, message);
-            allMessages.add(map);
+            consumer.poll(Duration.ZERO);
+            consumer.seekToBeginning(consumer.assignment());
+
+            ConsumerRecords<String, String> records = consumer.poll(POLL_TIMEOUT);
+
+            for (ConsumerRecord<String, String> record : records) {
+                try {
+                    processRecord(record, allMessages);
+                } catch (Exception e) {
+                    log.error("Error processing record: {}", record, e);
+                }
+            }
+        } catch (Exception e) {
+            log.error("Error consuming messages", e);
+            throw new RuntimeException("Failed to consume messages", e);
         }
+
         return allMessages;
     }
 
-    public List<Map<String, Message>> consumeExactUser(String key) {
-        List<Map<String, Message>> allMessages = consumeAllMessages();
+    private void processRecord(ConsumerRecord<String, String> record, List<Map<String, Message>> allMessages) {
+        String key = record.key();
+        String value = record.value();
+        Message message = gson.fromJson(value, Message.class);
 
-        return allMessages.stream()
-                .filter(map -> map.containsKey(key))
-                .toList();
+        Map<String, Message> messageMap = new HashMap<>();
+        messageMap.put(key, message);
+        allMessages.add(messageMap);
+
+        log.debug("Processed message with key: {}", key);
+    }
+
+    public List<Map<String, Message>> consumeExactUser(String key) {
+        if (key == null || key.trim().isEmpty()) {
+            throw new IllegalArgumentException("User key cannot be null or empty");
+        }
+
+        try {
+            List<Map<String, Message>> allMessages = consumeAllMessages();
+            return allMessages.stream()
+                    .filter(map -> map.containsKey(key))
+                    .toList();
+        } catch (Exception e) {
+            log.error("Error consuming messages for user: {}", key, e);
+            throw new RuntimeException("Failed to consume messages for user: " + key, e);
+        }
     }
 }
