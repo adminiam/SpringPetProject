@@ -1,5 +1,6 @@
 package com.example.securityproject.service;
 
+import com.example.securityproject.exception.SuppressedStackTraceException;
 import com.example.securityproject.models.Message;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,7 @@ public class ChatConsumer {
             }
         } catch (Exception e) {
             log.error("Error consuming messages", e);
-            throw new RuntimeException("Failed to consume messages", e);
+            throw new SuppressedStackTraceException(e.getMessage());
         }
 
         return allMessages;
