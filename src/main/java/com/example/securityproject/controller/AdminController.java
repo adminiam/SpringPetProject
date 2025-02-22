@@ -1,5 +1,6 @@
 package com.example.securityproject.controller;
 
+import com.example.securityproject.interfaces.Auditable;
 import com.example.securityproject.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,23 +24,29 @@ public class AdminController {
         return "adminPanel";
     }
 
+    @Auditable(action = "Admin created new client")
     @PostMapping("createClient")
-    public RedirectView createOrder(@RequestParam String userName, @RequestParam String password, @RequestParam String role)
-    {
+    public RedirectView createOrder(@RequestParam String userName, @RequestParam String password, @RequestParam String role) {
         return adminService.createClient(userName, password, role);
     }
+
     @GetMapping("updateModalClient")
     public RedirectView updateModalClient(@RequestParam String userName, RedirectAttributes redirectAttributes) {
-        return adminService.updateOrderOpenModal(userName,redirectAttributes);
+        return adminService.updateOrderOpenModal(userName, redirectAttributes);
     }
+
+    @Auditable(action = "Admin updated client")
     @PostMapping("updateClient")
     public RedirectView updateModalClient(@RequestParam String idModal, String roleModal) {
-        return adminService.updateClient(idModal,roleModal);
+        return adminService.updateClient(idModal, roleModal);
     }
+
+    @Auditable(action = "Admin deleted client")
     @PostMapping("deleteClient")
     public RedirectView deleteClient(@RequestParam String userName) {
         return adminService.deleteClient(userName);
     }
+
     @PostMapping("deleteAdmins")
     public RedirectView deleteAdmins() {
         return adminService.deleteAdmins();
