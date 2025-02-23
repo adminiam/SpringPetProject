@@ -18,9 +18,13 @@ public class RegistryService {
     public String register(String name, String password) {
         try {
             if (!name.isEmpty() && !password.isEmpty()) {
-                if (clientRepo.getClientByLoginName(name) != null && password.matches("^[A-Za-z0-9]+$")) {
+                if (clientRepo.getClientByLoginName(name) != null || !name.matches("^[A-Za-z0-9]+$")) {
                     return "redirect:/error";
-                } else {
+                }
+                else if (password.length() < 8 || !password.matches(".*\\d.*") || !password.matches(".*[A-Z].*")) {
+                    return "redirect:/error";
+                }
+                else {
                     Client client = new Client();
                     client.setIdClientUUID(UUID.randomUUID());
                     client.setLoginName(name);
@@ -32,8 +36,7 @@ public class RegistryService {
             } else {
                 return "redirect:/error";
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
         }
     }

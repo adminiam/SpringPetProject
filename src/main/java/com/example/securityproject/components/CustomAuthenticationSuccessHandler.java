@@ -5,7 +5,6 @@ import com.example.securityproject.repository.JpaClientRepo;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -19,8 +18,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     JpaClientRepo jpaClientRepo;
     @Autowired
     UserContext userContext;
-    @Autowired
-    RedisTemplate<String,String> redisTemplate;
+
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
@@ -33,7 +31,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         userContext.setRole(clientData.getRole());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         SecurityContextHolder.getContext().setAuthentication(userContext);
-        redisTemplate.opsForValue().set("user_session:" + userContext.getId(),userContext.getId().toString());
 
         if (userContext.getRole().equals("USER")) {
             response.sendRedirect("home");

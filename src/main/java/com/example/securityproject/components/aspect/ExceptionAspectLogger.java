@@ -1,4 +1,4 @@
-package com.example.securityproject.aspect;
+package com.example.securityproject.components.aspect;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
-public class ExeptionAspectLogger {
+public class ExceptionAspectLogger {
     @Pointcut("execution(* com.example.securityproject.service.*.*(..))")
     public void loggingPointCut() {
     }

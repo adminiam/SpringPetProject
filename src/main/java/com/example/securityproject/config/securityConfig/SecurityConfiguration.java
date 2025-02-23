@@ -35,7 +35,8 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/adminPanel/*","getMessage").hasAuthority("ADMIN")
-                        .requestMatchers("/login", "/styles.css", "/register", "/error", "/main.js","/images/*","getMessageClient").permitAll()
+                        .requestMatchers("/login", "/styles.css", "/register", "/error", "/main.js"
+                                ,"/images/*","getMessageClient").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
