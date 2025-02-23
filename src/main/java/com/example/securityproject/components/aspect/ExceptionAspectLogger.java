@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
-public class ExeptionAspectLogger {
+public class ExceptionAspectLogger {
     @Pointcut("execution(* com.example.securityproject.service.*.*(..))")
     public void loggingPointCut() {
     }
