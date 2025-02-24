@@ -19,6 +19,14 @@ CREATE TABLE orders
     id_client    binary(16)
 );
 
+CREATE TABLE actions
+(
+    id_action  bigint primary key not null auto_increment,
+    action     varchar(225)       not null,
+    method_name varchar(225)       not null,
+    result     varchar(225)       not null
+);
+
 ALTER TABLE orders
     ADD CONSTRAINT `fk_clents_orders` FOREIGN KEY (`id_client`) REFERENCES `clients` (`id_client`);
 
