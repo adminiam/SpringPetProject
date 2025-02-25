@@ -4,6 +4,7 @@ import com.example.securityproject.entities.Client;
 import com.example.securityproject.exception.SuppressedStackTraceException;
 import com.example.securityproject.repository.JpaClientRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -15,14 +16,14 @@ public class RegistryService {
     @Autowired
     JpaClientRepo clientRepo;
 
-    public String register(String name, String password) {
+    public HttpStatus register(String name, String password) {
         try {
             if (!name.isEmpty() && !password.isEmpty()) {
                 if (clientRepo.getClientByLoginName(name) != null || !name.matches("^[A-Za-z0-9]+$")) {
-                    return "redirect:/error";
+                    return HttpStatus.BAD_REQUEST;
                 }
                 else if (password.length() < 8 || !password.matches(".*\\d.*") || !password.matches(".*[A-Z].*")) {
-                    return "redirect:/error";
+                    return HttpStatus.BAD_REQUEST;
                 }
                 else {
                     Client client = new Client();
@@ -31,10 +32,10 @@ public class RegistryService {
                     client.setPassword(encoderService.generatePassword(password));
                     client.setRole("USER");
                     clientRepo.save(client);
-                    return "redirect:/login";
+                    return HttpStatus.OK;
                 }
             } else {
-                return "redirect:/error";
+                return HttpStatus.BAD_REQUEST;
             }
         } catch (Exception e) {
             throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
