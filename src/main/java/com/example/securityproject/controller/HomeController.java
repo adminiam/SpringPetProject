@@ -1,23 +1,21 @@
 package com.example.securityproject.controller;
 
-import com.example.securityproject.components.UserContext;
+import com.example.securityproject.entities.Order;
 import com.example.securityproject.service.HomeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+import java.util.List;
+@RequestMapping("home")
+@RestController
 public class HomeController {
     @Autowired
     HomeService homeService;
-    @Autowired
-    UserContext userContext;
 
-    @GetMapping("home")
-    public String getTrackingStatuses(Model model) {
-        homeService.getTrackingStatuses(model);
-        model.addAttribute("userId", userContext.getId());
-        return "home";
+    @GetMapping("getTrackingNumbers")
+    public List<Order> getTrackingStatuses() {
+        return homeService.getTrackingStatuses();
     }
 }

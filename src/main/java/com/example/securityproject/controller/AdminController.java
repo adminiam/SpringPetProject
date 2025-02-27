@@ -1,54 +1,45 @@
 package com.example.securityproject.controller;
 
+import com.example.securityproject.entities.Client;
 import com.example.securityproject.interfaces.Auditable;
 import com.example.securityproject.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.List;
+
+@RestController
 @RequestMapping("adminPanel")
 public class AdminController {
     @Autowired
     AdminService adminService;
 
     @GetMapping("")
-    public String getAdminPanel(Model model) {
-        adminService.getClientsList(model);
-        return "adminPanel";
+    public List<Client> getClientsList() {
+        return adminService.getClientsList();
     }
 
     @Auditable(action = "Admin created new client")
     @PostMapping("createClient")
-    public RedirectView createOrder(@RequestParam String userName, @RequestParam String password, @RequestParam String role) {
+    public HttpStatus createOrder(@RequestParam String userName, @RequestParam String password, @RequestParam String role) {
         return adminService.createClient(userName, password, role);
-    }
-
-    @GetMapping("updateModalClient")
-    public RedirectView updateModalClient(@RequestParam String userName, RedirectAttributes redirectAttributes) {
-        return adminService.updateOrderOpenModal(userName, redirectAttributes);
     }
 
     @Auditable(action = "Admin updated client")
     @PostMapping("updateClient")
-    public RedirectView updateModalClient(@RequestParam String idModal, String roleModal) {
+    public HttpStatus updateClient(@RequestParam String idModal, String roleModal) {
         return adminService.updateClient(idModal, roleModal);
     }
 
     @Auditable(action = "Admin deleted client")
     @PostMapping("deleteClient")
-    public RedirectView deleteClient(@RequestParam String userName) {
+    public HttpStatus deleteClient(@RequestParam String userName) {
         return adminService.deleteClient(userName);
     }
 
-    @PostMapping("deleteAdmins")
-    public RedirectView deleteAdmins() {
+    @PostMapping("deleteAllClients")
+    public HttpStatus deleteAdmins() {
         return adminService.deleteAdmins();
     }
 }

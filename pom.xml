@@ -45,21 +45,10 @@
             <version>8.0.33</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <version>6.1.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-jpa</artifactId>
-            <version>3.3.0</version>
-        </dependency>
-        <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.11.0</version>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -76,11 +65,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>6.1.10</version>
-        </dependency>
-        <dependency>
             <groupId>de.mkammerer</groupId>
             <artifactId>argon2-jvm</artifactId>
             <version>2.11</version>
@@ -90,9 +74,12 @@
             <artifactId>spring-kafka</artifactId>
             <version>3.2.4</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.6.0</version>
+        </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>

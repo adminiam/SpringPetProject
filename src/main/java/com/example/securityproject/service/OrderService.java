@@ -6,11 +6,8 @@ import com.example.securityproject.exception.SuppressedStackTraceException;
 import com.example.securityproject.repository.JpaOrderRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -24,7 +21,7 @@ public class OrderService {
     @Autowired
     UUIDService uuidService;
 
-    public RedirectView createOrder(String email, String orderNumber, String description) {
+    public HttpStatus createOrder(String email, String orderNumber, String description) {
         try {
             Order order = new Order();
             order.setIdOrder(UUID.randomUUID().toString());
@@ -33,18 +30,16 @@ public class OrderService {
             order.setDescription(description);
             order.setClientId(uuidService.uuidToBytes(userContext.getId()));
             jpaOrderRepo.save(order);
-            return new RedirectView("/home", true);
-        } catch (DataAccessException e) {
-            throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
+            return HttpStatus.OK;
         } catch (Exception e) {
             throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
         }
     }
 
-    public RedirectView updateOrder(String id, String email, String orderNumber, String description) {
+    public HttpStatus updateOrder(String id, String email, String orderNumber, String description) {
         try {
             if (email.isEmpty() && orderNumber.isEmpty() && description.isEmpty()) {
-                return new RedirectView("/home?insertionError=true");
+                return HttpStatus.BAD_REQUEST;
             } else {
                 Optional<Order> existingOrder = jpaOrderRepo.findByIdOrder(id);
                 if (existingOrder.isPresent()) {
@@ -57,56 +52,38 @@ public class OrderService {
                     else updatedOrder.setDescription(existingOrder.get().getDescription());
                     updatedOrder.setClientId(uuidService.uuidToBytes(userContext.getId()));
                     jpaOrderRepo.save(updatedOrder);
-                    return new RedirectView("/home", true);
+                    return HttpStatus.OK;
                 } else {
-                    return new RedirectView("/error", true);
+                    return HttpStatus.BAD_REQUEST;
                 }
             }
-        } catch (DataAccessException e) {
-            return new RedirectView("/error", true);
         } catch (Exception e) {
-            return new RedirectView("/error", true);
+            throw new SuppressedStackTraceException(e.getMessage());
         }
     }
 
-    public RedirectView deleteOrder(String id) {
+    public HttpStatus deleteOrder(String id) {
         try {
             Optional<Order> optionalOrder = jpaOrderRepo.findByIdOrder(id);
             if (optionalOrder.isPresent()) {
                 jpaOrderRepo.delete(optionalOrder.get());
-                return new RedirectView("/home", true);
+                return HttpStatus.OK;
             }
 
-        } catch (DataAccessException e) {
-            throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
         } catch (Exception e) {
             throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
         }
-        return new RedirectView("/error", true);
+        return HttpStatus.BAD_REQUEST;
     }
 
     @Transactional
-    public RedirectView deleteAllOrders() {
+    public HttpStatus deleteAllOrders() {
         try {
             jpaOrderRepo.deleteAllByClientId(uuidService.uuidToBytes(userContext.getId()));
-            return new RedirectView("/home", true);
-        } catch (DataAccessException e) {
-            throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
+            return HttpStatus.OK;
         } catch (Exception e) {
             throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
         }
-    }
-
-    public RedirectView updateOrderOpenModal(String id, RedirectAttributes redirectAttributes) {
-        Optional<Order> optionalOrder = jpaOrderRepo.findByIdOrder(id);
-        if (optionalOrder.isPresent()) {
-            Order order = optionalOrder.get();
-            redirectAttributes.addFlashAttribute("idModal", id);
-            redirectAttributes.addFlashAttribute("emailModal", order.getEmail());
-            redirectAttributes.addFlashAttribute("orderNumberModal", order.getOrderNumber());
-            redirectAttributes.addFlashAttribute("descriptionModal", order.getDescription());
-        }
-        return new RedirectView("/home?modalOpen=true", false);
     }
 }
 
