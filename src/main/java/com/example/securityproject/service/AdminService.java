@@ -1,16 +1,14 @@
 package com.example.securityproject.service;
 
-
 import com.example.securityproject.entities.Client;
 import com.example.securityproject.exception.SuppressedStackTraceException;
 import com.example.securityproject.repository.JpaClientRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -21,31 +19,29 @@ public class AdminService {
     @Autowired
     PasswordEncoderService encoderService;
 
-    public void getClientsList(Model model) {
+    public List<Client> getClientsList() {
         try {
-            model.addAttribute("clients", jpaClientRepo.findAll());
+            return jpaClientRepo.findAll();
         } catch (Exception e) {
             throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
         }
     }
 
-    public RedirectView deleteClient(String userName) {
+    public HttpStatus deleteClient(String userName) {
         try {
             Client client = jpaClientRepo.getClientByLoginName(userName);
             if (client != null) {
                 jpaClientRepo.delete(client);
-                return new RedirectView("/adminPanel", true);
+                return HttpStatus.OK;
             }
 
-        } catch (DataAccessException e) {
-            throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
         } catch (Exception e) {
             throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
         }
-        return new RedirectView("/error", true);
+        return HttpStatus.INTERNAL_SERVER_ERROR;
     }
 
-    public RedirectView createClient(String userName, String password, String role) {
+    public HttpStatus createClient(String userName, String password, String role) {
         try {
             if (jpaClientRepo.getClientByLoginName(userName) == null) {
                 Client client = new Client();
@@ -54,18 +50,16 @@ public class AdminService {
                 client.setPassword(encoderService.generatePassword(password));
                 client.setRole(role);
                 jpaClientRepo.save(client);
-                return new RedirectView("/adminPanel", true);
+                return HttpStatus.OK;
             } else {
-                throw new RuntimeException();
+                throw new SuppressedStackTraceException("Client already exists");
             }
-        } catch (DataAccessException e) {
-            throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
         } catch (Exception e) {
             throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
         }
     }
 
-    public RedirectView updateClient(String userName, String roleModal) {
+    public HttpStatus updateClient(String userName, String roleModal) {
         try {
             Client client = jpaClientRepo.getClientByLoginName(userName);
             Client newClient = new Client();
@@ -74,30 +68,19 @@ public class AdminService {
             newClient.setPassword(client.getPassword());
             newClient.setRole(roleModal);
             jpaClientRepo.save(newClient);
-            return new RedirectView("/adminPanel", true);
-        } catch (DataAccessException e) {
-            throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
+            return HttpStatus.OK;
         } catch (Exception e) {
             throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
         }
 
     }
-    public RedirectView updateOrderOpenModal(String userName, RedirectAttributes redirectAttributes) {
+
+    public HttpStatus deleteAdmins(){
         try {
-            Client client = jpaClientRepo.getClientByLoginName(userName);
-            if (client != null) {
-                redirectAttributes.addFlashAttribute("idModal",userName);
-                redirectAttributes.addFlashAttribute("roleModal", client.getRole());
-            }
-            return new RedirectView("/adminPanel?modalOpen=true", false);
-        } catch (DataAccessException e) {
-            throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
-        } catch (Exception e) {
+            jpaClientRepo.deleteAllAdmins();
+            return HttpStatus.OK;
+        }catch (DataAccessException e){
             throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
         }
-    }
-    public RedirectView deleteAdmins(){
-        jpaClientRepo.deleteAllAdmins();
-        return new RedirectView("/adminPanel", false);
     }
 }
