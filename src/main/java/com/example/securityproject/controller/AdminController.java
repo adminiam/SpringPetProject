@@ -1,7 +1,7 @@
 package com.example.securityproject.controller;
 
 import com.example.securityproject.entities.Client;
-import com.example.securityproject.interfaces.Auditable;
+import com.example.securityproject.annotations.Auditable;
 import com.example.securityproject.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

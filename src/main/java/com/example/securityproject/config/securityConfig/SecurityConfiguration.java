@@ -1,97 +1,74 @@
 package com.example.securityproject.config.securityConfig;
 
-import com.example.securityproject.components.CustomAuthenticationSuccessHandler;
-
+import com.example.securityproject.config.dbconfig.CustomArgon2PasswordEncoder;
+import com.example.securityproject.entities.Client;
 import com.example.securityproject.repository.JpaClientRepo;
-import com.example.securityproject.service.PasswordEncoderService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.securityproject.components.JwtTokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
-import java.util.concurrent.atomic.AtomicReference;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableWebSecurity
 public class SecurityConfiguration {
 
-    @Autowired
-    JpaClientRepo jpaClientRepo;
+    private final JpaClientRepo jpaClientRepo;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    @Autowired
-    CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    public SecurityConfiguration(JpaClientRepo jpaClientRepo, JwtTokenProvider jwtTokenProvider) {
+        this.jpaClientRepo = jpaClientRepo;
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
 
-    @Autowired
-    PasswordEncoderService passwordEncoderService;
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new CustomArgon2PasswordEncoder();
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/adminPanel/*","getMessage").hasAuthority("ADMIN")
-                        .requestMatchers("/login", "/styles.css", "/register", "/error", "/main.js"
-                                ,"/images/*","getMessageClient").permitAll()
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/login", "/register", "/error").permitAll()
+                        .requestMatchers("/adminPanel/*", "/getMessage").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )
-                .formLogin((form) -> form
-                        .loginPage("/login")
-                        .loginProcessingUrl("/login")
-                        .successHandler(customAuthenticationSuccessHandler)
-                        .failureUrl("/login?error=true")
-                        .permitAll()
-                )
-                .logout((logout) -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout=true")
-                        .permitAll()
-                )
-                .rememberMe((rememberMe) -> rememberMe.userDetailsService(userDetailsService())
-                        .key("uniqueAndSecret")
-                        .tokenValiditySeconds(259200));
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService()),
+                        UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> {
-            String password = jpaClientRepo.getClientPasswordByLoginName(username);
-            String role = jpaClientRepo.getClientByLoginName(username).getRole();
-            System.out.println(role);
+            Client client = jpaClientRepo.getClientByLoginName(username);
+            if (client == null) {
+                throw new UsernameNotFoundException("User not found: " + username);
+            }
+
             return User.withUsername(username)
-                    .password(password)
-                    .authorities(new SimpleGrantedAuthority(role))
+                    .password(client.getPassword())
+                    .authorities(new SimpleGrantedAuthority(client.getRole()))
                     .build();
         };
     }
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        AtomicReference<String> userName = new AtomicReference<>("");
-        auth.userDetailsService((username) -> {
-            String password = jpaClientRepo.getClientPasswordByLoginName(username);
-            String role = jpaClientRepo.getClientByLoginName(username).getRole();
-            System.out.println("User: " + username + ", Role: " + role);
-            userName.set(username);
-            return User.withUsername(username)
-                    .password(password)
-                    .authorities(new SimpleGrantedAuthority(role))
-                    .build();
-        }).passwordEncoder(new PasswordEncoder() {
-            @Override
-            public String encode(CharSequence rawPassword) {
-                return passwordEncoderService.generatePassword(rawPassword.toString());
-            }
 
-            @Override
-            public boolean matches(CharSequence rawPassword, String encodedPassword) {
-                return passwordEncoderService.passwordVerify(userName.get(), rawPassword.toString());
-            }
-        });
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
-
 }
