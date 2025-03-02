@@ -43,8 +43,10 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/login", "/register", "/error").permitAll()
                         .requestMatchers("/adminPanel/*", "/getMessage").hasAuthority("ADMIN")
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() // <-- Добавил Swagger
                         .anyRequest().authenticated()
                 )
+
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService()),
                         UsernamePasswordAuthenticationFilter.class);
 
