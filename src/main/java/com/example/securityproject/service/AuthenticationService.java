@@ -29,6 +29,7 @@ public class AuthenticationService {
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         Client clientData = jpaClientRepo.getClientByLoginName(request.getUsername());
         if (clientData == null) {

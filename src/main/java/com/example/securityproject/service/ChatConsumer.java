@@ -38,27 +38,28 @@ public class ChatConsumer {
                 try {
                     processRecord(record, allMessages);
                 } catch (Exception e) {
-                    log.error("Error processing record: {}", record, e);
+                    throw new SuppressedStackTraceException(e.getMessage());
                 }
             }
         } catch (Exception e) {
-            log.error("Error consuming messages", e);
             throw new SuppressedStackTraceException(e.getMessage());
         }
-
         return allMessages;
     }
 
     private void processRecord(ConsumerRecord<String, String> record, List<Map<String, Message>> allMessages) {
-        String key = record.key();
-        String value = record.value();
-        Message message = gson.fromJson(value, Message.class);
+        try {
+            String key = record.key();
+            String value = record.value();
+            Message message = gson.fromJson(value, Message.class);
 
-        Map<String, Message> messageMap = new HashMap<>();
-        messageMap.put(key, message);
-        allMessages.add(messageMap);
-
-        log.debug("Processed message with key: {}", key);
+            Map<String, Message> messageMap = new HashMap<>();
+            messageMap.put(key, message);
+            allMessages.add(messageMap);
+        }
+       catch (Exception e) {
+           throw new SuppressedStackTraceException(e.getMessage());
+       }
     }
 
     public List<Map<String, Message>> consumeExactUser(String key) {
@@ -72,7 +73,6 @@ public class ChatConsumer {
                     .filter(map -> map.containsKey(key))
                     .toList();
         } catch (Exception e) {
-            log.error("Error consuming messages for user: {}", key, e);
             throw new RuntimeException("Failed to consume messages for user: " + key, e);
         }
     }
