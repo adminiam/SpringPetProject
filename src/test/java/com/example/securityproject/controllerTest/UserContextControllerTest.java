@@ -1,4 +1,4 @@
-package com.example.securityproject;
+package com.example.securityproject.controllerTest;
 
 import io.restassured.RestAssured;
 import io.restassured.config.HttpClientConfig;
@@ -11,7 +11,7 @@ import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class AuthTrackingTest {
+public class UserContextControllerTest {
 
     @BeforeAll
     public static void setup() {
@@ -23,7 +23,7 @@ public class AuthTrackingTest {
     }
 
     @Test
-    public void testAuthenticationAndTrackingNumbers() {
+    public void testAuthenticationAndContext() {
         Response authResponse = given()
                 .contentType("application/json")
                 .body("{\"username\": \"user1\", \"password\": \"12345678\"}")
@@ -39,8 +39,15 @@ public class AuthTrackingTest {
                 .header("Authorization", "Bearer " + token)
                 .cookies(authResponse.getCookies())
                 .when()
-                .get("/home/getTrackingNumbers");
+                .log().all()
+                .get("/user/getContext");
 
-        assertEquals(200, trackingResponse.getStatusCode(), "Не удалось получить трекинг-номера");
+        trackingResponse.then().log().body();
+
+        assertEquals(200, trackingResponse.getStatusCode(), "Не удалось получить контекст");
+
+        String responseBody = trackingResponse.getBody().asString();
+        assertNotNull(responseBody, "Ответное тело пустое");
     }
+
 }

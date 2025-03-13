@@ -1,4 +1,4 @@
-package com.example.securityproject;
+package com.example.securityproject.controllerTest;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
