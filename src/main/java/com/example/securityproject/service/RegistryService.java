@@ -5,16 +5,19 @@ import com.example.securityproject.exception.SuppressedStackTraceException;
 import com.example.securityproject.repository.JpaClientRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
 @Service
 public class RegistryService {
+
     @Autowired
-    PasswordEncoderService encoderService;
+    private PasswordEncoder passwordEncoder;
+
     @Autowired
-    JpaClientRepo clientRepo;
+    private JpaClientRepo clientRepo;
 
     public HttpStatus register(String name, String password) {
         try {
@@ -29,7 +32,7 @@ public class RegistryService {
                     Client client = new Client();
                     client.setIdClientUUID(UUID.randomUUID());
                     client.setLoginName(name);
-                    client.setPassword(encoderService.generatePassword(password));
+                    client.setPassword(passwordEncoder.encode(password));
                     client.setRole("USER");
                     clientRepo.save(client);
                     return HttpStatus.OK;
@@ -41,5 +44,4 @@ public class RegistryService {
             throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
         }
     }
-
 }

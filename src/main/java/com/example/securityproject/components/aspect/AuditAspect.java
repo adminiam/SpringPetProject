@@ -1,6 +1,6 @@
 package com.example.securityproject.components.aspect;
 
-import com.example.securityproject.interfaces.Auditable;
+import com.example.securityproject.annotations.Auditable;
 import com.example.securityproject.models.Action;
 import com.example.securityproject.repository.JpaActionsRepo;
 import org.aspectj.lang.JoinPoint;
