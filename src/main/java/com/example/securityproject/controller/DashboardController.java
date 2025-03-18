@@ -28,7 +28,7 @@ public class DashboardController {
 
 
     @PostMapping("deleteOrder")
-    public HttpStatus deleteOrder(@RequestParam String trackingNumber) {
+    public HttpStatus deleteOrder(@RequestBody String trackingNumber) {
         return orderService.deleteOrder(trackingNumber);
     }
 

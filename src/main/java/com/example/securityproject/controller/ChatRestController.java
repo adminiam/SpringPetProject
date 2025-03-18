@@ -26,7 +26,7 @@ public class ChatRestController {
         return chatProducer.sendMessage(message,receiverId);
     }
     @PostMapping("/sendMessageForClient")
-    public HttpStatus sendMessageClient(@RequestParam String message) {
+    public HttpStatus sendMessageClient(@RequestBody String message) {
         return chatProducer.sendMessage(message);
     }
 
@@ -36,12 +36,12 @@ public class ChatRestController {
     }
 
     @GetMapping("/getMessageForClient")
-    public List<Map<String, Message>> getMessageForClient(@RequestParam String key) {
+    public List<Map<String, Message>> getMessageForClient(@RequestBody String key) {
         return chatConsumer.consumeExactUser(key);
     }
 
     @GetMapping("/getSenderName")
-    public String getSenderName(@RequestParam String senderId) {
+    public String getSenderName(@RequestBody String senderId) {
         return userService.getUserName(senderId);
     }
 }

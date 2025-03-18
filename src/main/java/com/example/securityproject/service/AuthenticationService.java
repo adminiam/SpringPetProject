@@ -14,7 +14,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 public class AuthenticationService {
@@ -30,7 +29,7 @@ public class AuthenticationService {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(LoginRequest request) {
         Client clientData = jpaClientRepo.getClientByLoginName(request.getUsername());
         if (clientData == null) {
             throw new UsernameNotFoundException("Invalid username or password");

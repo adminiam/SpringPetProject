@@ -1,5 +1,6 @@
 package com.example.securityproject.service;
 
+import com.example.securityproject.dto.ClientCreate;
 import com.example.securityproject.entities.Client;
 import com.example.securityproject.exception.SuppressedStackTraceException;
 import com.example.securityproject.repository.JpaClientRepo;
@@ -43,14 +44,14 @@ public class AdminService {
         return HttpStatus.INTERNAL_SERVER_ERROR;
     }
 
-    public HttpStatus createClient(String userName, String password, String role) {
+    public HttpStatus createClient(ClientCreate request) {
         try {
-            if (jpaClientRepo.getClientByLoginName(userName) == null) {
+            if (jpaClientRepo.getClientByLoginName(request.getUserName()) == null) {
                 Client client = new Client();
                 client.setIdClientUUID(UUID.randomUUID());
-                client.setLoginName(userName);
-                client.setPassword(passwordEncoder.encode(password));
-                client.setRole(role);
+                client.setLoginName(request.getUserName());
+                client.setPassword(passwordEncoder.encode(request.getPassword()));
+                client.setRole(request.getRole());
                 jpaClientRepo.save(client);
                 return HttpStatus.OK;
             } else {

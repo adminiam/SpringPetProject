@@ -1,5 +1,6 @@
 package com.example.securityproject.controller;
 
+import com.example.securityproject.dto.ClientCreate;
 import com.example.securityproject.entities.Client;
 import com.example.securityproject.annotations.Auditable;
 import com.example.securityproject.service.AdminService;
@@ -22,19 +23,19 @@ public class AdminController {
 
     @Auditable(action = "Admin created new client")
     @PostMapping("createClient")
-    public HttpStatus createOrder(@RequestParam String userName, @RequestParam String password, @RequestParam String role) {
-        return adminService.createClient(userName, password, role);
+    public HttpStatus createClient(@RequestBody ClientCreate client) {
+        return adminService.createClient(client);
     }
 
     @Auditable(action = "Admin updated client")
     @PostMapping("updateClient")
-    public HttpStatus updateClient(@RequestParam String idModal, String roleModal) {
+    public HttpStatus updateClient(@RequestParam String idModal,@RequestParam String roleModal) {
         return adminService.updateClient(idModal, roleModal);
     }
 
     @Auditable(action = "Admin deleted client")
     @PostMapping("deleteClient")
-    public HttpStatus deleteClient(@RequestParam String userName) {
+    public HttpStatus deleteClient(@RequestBody String userName) {
         return adminService.deleteClient(userName);
     }
 
