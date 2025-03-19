@@ -5,6 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ClientDelete {
-    private String userName;
+public class GetMessageForClient {
+    private String key;
 }

@@ -5,8 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AuthResponse {
-    private String role;
+public class SendMessage {
     private String message;
-    private String token;
+    private String receiverId;
 }
