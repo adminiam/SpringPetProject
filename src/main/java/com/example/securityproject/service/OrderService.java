@@ -1,6 +1,8 @@
 package com.example.securityproject.service;
 
 import com.example.securityproject.components.UserContext;
+import com.example.securityproject.dto.OrderCreate;
+import com.example.securityproject.dto.OrderUpdate;
 import com.example.securityproject.entities.Order;
 import com.example.securityproject.exception.SuppressedStackTraceException;
 import com.example.securityproject.repository.JpaOrderRepo;
@@ -21,13 +23,13 @@ public class OrderService {
     @Autowired
     UUIDService uuidService;
 
-    public HttpStatus createOrder(String email, String orderNumber, String description) {
+    public HttpStatus createOrder(OrderCreate request) {
         try {
             Order order = new Order();
             order.setIdOrder(UUID.randomUUID().toString());
-            order.setEmail(email);
-            order.setOrderNumber(orderNumber);
-            order.setDescription(description);
+            order.setEmail(request.getEmail());
+            order.setOrderNumber(request.getOrderNumber());
+            order.setDescription(request.getDescription());
             order.setClientId(uuidService.uuidToBytes(userContext.getId()));
             jpaOrderRepo.save(order);
             return HttpStatus.OK;
@@ -36,8 +38,12 @@ public class OrderService {
         }
     }
 
-    public HttpStatus updateOrder(String id, String email, String orderNumber, String description) {
+    public HttpStatus updateOrder(OrderUpdate request) {
         try {
+            String id = request.getId();
+            String email = request.getEmail();
+            String orderNumber = request.getOrderNumber();
+            String description = request.getDescription();
             if (email.isEmpty() && orderNumber.isEmpty() && description.isEmpty()) {
                 return HttpStatus.BAD_REQUEST;
             } else {

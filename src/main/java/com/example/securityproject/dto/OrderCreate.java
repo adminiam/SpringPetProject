@@ -9,7 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClientUpdate {
-    private String userName;
-    private String role;
+public class OrderCreate {
+    private String email;
+    private String orderNumber;
+    private String description;
 }

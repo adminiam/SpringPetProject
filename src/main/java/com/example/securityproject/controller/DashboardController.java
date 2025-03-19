@@ -1,5 +1,8 @@
 package com.example.securityproject.controller;
 
+import com.example.securityproject.dto.OrderCreate;
+import com.example.securityproject.dto.OrderDelete;
+import com.example.securityproject.dto.OrderUpdate;
 import com.example.securityproject.entities.Order;
 import com.example.securityproject.service.HomeService;
 import com.example.securityproject.service.OrderService;
@@ -23,24 +26,19 @@ public class DashboardController {
     }
 
     @PostMapping("createOrder")
-    public HttpStatus createOrder(@RequestParam String email,
-                                  @RequestParam String orderNumber,
-                                  @RequestParam String description) {
-        return orderService.createOrder(email, orderNumber, description);
+    public HttpStatus createOrder(OrderCreate order) {
+        return orderService.createOrder(order);
     }
 
     @PostMapping("updateOrder")
-    public HttpStatus updateOrder(@RequestParam String id,
-                                  @RequestParam String email,
-                                  @RequestParam String orderNumber,
-                                  @RequestParam String description) {
-        return orderService.updateOrder(id, email, orderNumber, description);
+    public HttpStatus updateOrder(@RequestBody OrderUpdate order) {
+        return orderService.updateOrder(order);
     }
 
 
     @PostMapping("deleteOrder")
-    public HttpStatus deleteOrder(@RequestBody String trackingNumber) {
-        return orderService.deleteOrder(trackingNumber);
+    public HttpStatus deleteOrder(@RequestBody OrderDelete trackingNumber) {
+        return orderService.deleteOrder(trackingNumber.getTrackingNumber());
     }
 
     @PostMapping("deleteAllOrders")

@@ -9,7 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClientUpdate {
-    private String userName;
-    private String role;
+public class OrderDelete {
+    private String trackingNumber;
 }
