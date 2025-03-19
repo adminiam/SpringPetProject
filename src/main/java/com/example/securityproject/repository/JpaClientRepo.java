@@ -15,8 +15,8 @@ public interface JpaClientRepo extends JpaRepository<Client, byte[]> {
     @Query("DELETE FROM Client c WHERE c.loginName != 'user1' AND c.role = 'ADMIN'")
     void deleteAllAdmins();
 
-    @Query("select c.password from Client c where c.loginName = :username")
-    String getClientPasswordByLoginName(@Param("username") String username);
+//    @Query("select c.password from Client c where c.loginName = :username")
+//    String getClientPasswordByLoginName(@Param("username") String username);
 
     Client getClientByLoginName(String name);
 

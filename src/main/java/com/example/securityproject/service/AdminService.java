@@ -1,6 +1,7 @@
 package com.example.securityproject.service;
 
 import com.example.securityproject.dto.ClientCreate;
+import com.example.securityproject.dto.ClientUpdate;
 import com.example.securityproject.entities.Client;
 import com.example.securityproject.exception.SuppressedStackTraceException;
 import com.example.securityproject.repository.JpaClientRepo;
@@ -62,14 +63,14 @@ public class AdminService {
         }
     }
 
-    public HttpStatus updateClient(String userName, String roleModal) {
+    public HttpStatus updateClient(ClientUpdate request) {
         try {
-            Client client = jpaClientRepo.getClientByLoginName(userName);
+            Client client = jpaClientRepo.getClientByLoginName(request.getUserName());
             Client newClient = new Client();
             newClient.setIdClientUUID(client.getIdClientUUID());
             newClient.setLoginName(client.getLoginName());
             newClient.setPassword(client.getPassword());
-            newClient.setRole(roleModal);
+            newClient.setRole(request.getRole());
             jpaClientRepo.save(newClient);
             return HttpStatus.OK;
         } catch (Exception e) {
