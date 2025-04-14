@@ -72,6 +72,32 @@ public class AdminControllerTest {
         assertEquals(200, trackingResponse.getStatusCode(), "Не удалось получить трекинг-номера");
     }
     @Test
+    public void testAuthenticationAndUpdateUsersAdmin() {
+        Response authResponse = given()
+                .contentType("application/json")
+                .body("{\"username\": \"user1\", \"password\": \"12345678\"}")
+                .when()
+                .post("/api/auth/login");
+
+        assertEquals(200, authResponse.getStatusCode(), "Аутентификация не удалась");
+
+        String token = authResponse.jsonPath().getString("token");
+        assertNotNull(token, "Токен не получен");
+
+        Response trackingResponse = given()
+                .header("Authorization", "Bearer " + token)
+                .cookies(authResponse.getCookies())
+                .contentType("application/json")
+                .body("{\"userName\": \"user3\", \"role\": \"ADMIN\"}")
+                .when()
+                .log().all()
+                .post("/adminPanel/updateClient");
+
+        trackingResponse.then().log().body();
+
+        assertEquals(200, trackingResponse.getStatusCode(), "Не удалось получить трекинг-номера");
+    }
+    @Test
     public void testAuthenticationAndDeleteUsersAdmin() {
         Response authResponse = given()
                 .contentType("application/json")
@@ -97,6 +123,7 @@ public class AdminControllerTest {
 
         assertEquals(200, trackingResponse.getStatusCode(), "Не удалось получить трекинг-номера");
     }
+
     @Test
     public void testAuthenticationAndDeleteAllAdmin() {
         Response authResponse = given()
