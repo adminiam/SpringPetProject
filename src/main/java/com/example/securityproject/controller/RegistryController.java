@@ -1,5 +1,6 @@
 package com.example.securityproject.controller;
 
+import com.example.securityproject.dto.RegisterRequest;
 import com.example.securityproject.service.RegistryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,8 +12,8 @@ public class RegistryController {
     RegistryService registryService;
 
     @PostMapping("register")
-    public HttpStatus register(@RequestParam String name, @RequestParam String password) {
-        return registryService.register(name, password);
+    public HttpStatus register(@RequestBody RegisterRequest request) {
+        return registryService.register(request.getName(), request.getPassword());
     }
 }
 
