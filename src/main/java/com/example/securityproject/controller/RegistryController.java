@@ -6,12 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+@RequestMapping("/api/auth")
 @RestController
 public class RegistryController {
     @Autowired
     RegistryService registryService;
 
-    @PostMapping("register")
+    @PostMapping("/register")
     public HttpStatus register(@RequestBody RegisterRequest request) {
         return registryService.register(request.getName(), request.getPassword());
     }
