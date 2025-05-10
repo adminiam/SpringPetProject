@@ -1,6 +1,7 @@
 package com.example.securityproject.controller;
 
 import com.example.securityproject.components.UserContext;
+import com.example.securityproject.dto.UserContextDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +13,7 @@ public class UserRestController {
     private UserContext userContext;
 
     @GetMapping("/getContext")
-    public String getUserContext() {
-        return userContext.getId().toString();
+    public UserContextDTO getUserContext() {
+        return userContext.getUserContext();
     }
 }

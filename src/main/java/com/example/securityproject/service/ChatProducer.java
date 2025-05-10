@@ -1,6 +1,7 @@
 package com.example.securityproject.service;
 
 import com.example.securityproject.components.UserContext;
+import com.example.securityproject.dto.SendMessage;
 import com.example.securityproject.exception.SuppressedStackTraceException;
 import com.example.securityproject.models.Message;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,16 +18,16 @@ public class ChatProducer {
     @Autowired
     private UserContext userContext;
 
-    public HttpStatus sendMessage(String message, String receiverId) {
+    public HttpStatus sendMessage(SendMessage request) {
         try {
             Message msg = Message.builder()
                     .id(UUID.randomUUID())
-                    .message(message)
+                    .message(request.getMessage())
                     .senderId(userContext.getId())
-                    .receiverId(UUID.fromString(receiverId))
+                    .receiverId(UUID.fromString(request.getReceiverId()))
                     .build();
 
-            kafkaTemplate.send("chat_topic", receiverId, msg);
+            kafkaTemplate.send("chat_topic", request.getReceiverId(), msg);
 
             return HttpStatus.OK;
         } catch (Exception e) {

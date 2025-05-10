@@ -1,5 +1,9 @@
 package com.example.securityproject.controller;
 
+import com.example.securityproject.dto.GetMessageForClient;
+import com.example.securityproject.dto.GetSenderName;
+import com.example.securityproject.dto.SendMessage;
+import com.example.securityproject.dto.SendMessageClient;
 import com.example.securityproject.models.Message;
 import com.example.securityproject.service.ChatConsumer;
 import com.example.securityproject.service.ChatProducer;
@@ -22,12 +26,12 @@ public class ChatRestController {
     private ChatProducer chatProducer;
 
     @PostMapping("/sendMessageForAdmin")
-    public HttpStatus sendMessage(@RequestParam String message, @RequestParam String receiverId) {
-        return chatProducer.sendMessage(message,receiverId);
+    public HttpStatus sendMessage(@RequestBody SendMessage sendMessage) {
+        return chatProducer.sendMessage(sendMessage);
     }
     @PostMapping("/sendMessageForClient")
-    public HttpStatus sendMessageClient(@RequestParam String message) {
-        return chatProducer.sendMessage(message);
+    public HttpStatus sendMessageClient(@RequestBody SendMessageClient sendMessage) {
+        return chatProducer.sendMessage(sendMessage.getMessage());
     }
 
     @GetMapping("/getMessageForAdmin")
@@ -36,12 +40,12 @@ public class ChatRestController {
     }
 
     @GetMapping("/getMessageForClient")
-    public List<Map<String, Message>> getMessageForClient(@RequestParam String key) {
-        return chatConsumer.consumeExactUser(key);
+    public List<Map<String, Message>> getMessageForClient(@RequestBody GetMessageForClient key) {
+        return chatConsumer.consumeExactUser(key.getKey());
     }
 
     @GetMapping("/getSenderName")
-    public String getSenderName(@RequestParam String senderId) {
-        return userService.getUserName(senderId);
+    public String getSenderName(@RequestBody GetSenderName senderId) {
+        return userService.getUserName(senderId.getSenderId());
     }
 }

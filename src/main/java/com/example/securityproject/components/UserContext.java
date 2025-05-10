@@ -1,5 +1,6 @@
 package com.example.securityproject.components;
 
+import com.example.securityproject.dto.UserContextDTO;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -7,9 +8,11 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
+
 import org.springframework.context.annotation.Scope;
 
 @Getter
@@ -20,6 +23,10 @@ public class UserContext implements Authentication {
     private UUID id;
     private String name;
     private String role;
+
+    public UserContextDTO getUserContext() {
+        return new UserContextDTO(id, name, role);
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

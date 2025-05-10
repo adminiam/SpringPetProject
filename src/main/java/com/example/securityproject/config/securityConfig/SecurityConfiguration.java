@@ -24,10 +24,12 @@ public class SecurityConfiguration {
 
     private final JpaClientRepo jpaClientRepo;
     private final JwtTokenProvider jwtTokenProvider;
+    private final CorsConfig corsConfig;
 
-    public SecurityConfiguration(JpaClientRepo jpaClientRepo, JwtTokenProvider jwtTokenProvider) {
+    public SecurityConfiguration(JpaClientRepo jpaClientRepo, JwtTokenProvider jwtTokenProvider, CorsConfig config) {
         this.jpaClientRepo = jpaClientRepo;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.corsConfig = config;
     }
 
     @Bean
@@ -39,6 +41,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> corsConfig.corsConfigurationSource())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/login", "/register", "/error").permitAll()
