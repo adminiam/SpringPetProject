@@ -26,7 +26,7 @@ public class DashboardController {
     }
 
     @PostMapping("createOrder")
-    public HttpStatus createOrder(OrderCreate order) {
+    public HttpStatus createOrder(@RequestBody OrderCreate order) {
         return orderService.createOrder(order);
     }
 
