@@ -56,7 +56,7 @@ public class AuthenticationService {
                     .maxAge(60 * 60)
                     .build();
 
-            return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
+            return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(token);
         } catch (Exception e) {
             return ResponseEntity.status(403).body("Authentication failed");
         }
