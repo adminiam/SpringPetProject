@@ -32,16 +32,15 @@ public class HomeControllerTest {
 
         assertEquals(200, authResponse.getStatusCode(), "Аутентификация не удалась");
 
-        String token = authResponse.jsonPath().getString("token");
-        assertNotNull(token, "Токен не получен");
+        String tokenCookie = authResponse.getCookie("token");
+        assertNotNull(tokenCookie, "Cookie с токеном не получена");
 
         Response trackingResponse = given()
-                .header("Authorization", "Bearer " + token)
                 .cookies(authResponse.getCookies())
                 .when()
-                .log().all()
-                .get("/home/getTrackingNumbers");
+                .get("/dashboard/getTrackingNumbers");
 
         assertEquals(200, trackingResponse.getStatusCode(), "Не удалось получить трекинг-номера");
     }
+
 }
