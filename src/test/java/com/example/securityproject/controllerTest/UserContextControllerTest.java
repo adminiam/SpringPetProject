@@ -16,14 +16,12 @@ public class UserContextControllerTest {
     @BeforeAll
     public static void setup() {
         RestAssured.baseURI = "http://localhost:8080";
-
         RestAssured.config = RestAssuredConfig.config()
                 .httpClient(HttpClientConfig.httpClientConfig()
                         .setParam("http.connection.stalecheck", true));
     }
 
-    @Test
-    public void testAuthenticationAndContext() {
+    private Response loginAndGetCookies() {
         Response authResponse = given()
                 .contentType("application/json")
                 .body("{\"username\": \"user1\", \"password\": \"12345678\"}")
@@ -31,23 +29,26 @@ public class UserContextControllerTest {
                 .post("/api/auth/login");
 
         assertEquals(200, authResponse.getStatusCode(), "Аутентификация не удалась");
+        assertNotNull(authResponse.getCookie("token"), "Cookie с токеном не получена");
 
-        String token = authResponse.jsonPath().getString("token");
-        assertNotNull(token, "Токен не получен");
+        return authResponse;
+    }
 
-        Response trackingResponse = given()
-                .header("Authorization", "Bearer " + token)
+    @Test
+    public void testGetUserContext() {
+        Response authResponse = loginAndGetCookies();
+
+        Response contextResponse = given()
                 .cookies(authResponse.getCookies())
                 .when()
                 .log().all()
                 .get("/user/getContext");
 
-        trackingResponse.then().log().body();
+        contextResponse.then().log().body();
 
-        assertEquals(200, trackingResponse.getStatusCode(), "Не удалось получить контекст");
+        assertEquals(200, contextResponse.getStatusCode(), "Не удалось получить контекст");
 
-        String responseBody = trackingResponse.getBody().asString();
+        String responseBody = contextResponse.getBody().asString();
         assertNotNull(responseBody, "Ответное тело пустое");
     }
-
 }

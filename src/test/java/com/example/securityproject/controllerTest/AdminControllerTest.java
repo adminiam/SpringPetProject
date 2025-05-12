@@ -16,14 +16,12 @@ public class AdminControllerTest {
     @BeforeAll
     public static void setup() {
         RestAssured.baseURI = "http://localhost:8080";
-
         RestAssured.config = RestAssuredConfig.config()
                 .httpClient(HttpClientConfig.httpClientConfig()
                         .setParam("http.connection.stalecheck", true));
     }
 
-    @Test
-    public void testAuthenticationAndAdminPanel() {
+    private Response loginAsAdmin() {
         Response authResponse = given()
                 .contentType("application/json")
                 .body("{\"username\": \"user1\", \"password\": \"12345678\"}")
@@ -32,60 +30,47 @@ public class AdminControllerTest {
 
         assertEquals(200, authResponse.getStatusCode(), "Аутентификация не удалась");
 
-        String token = authResponse.jsonPath().getString("token");
-        assertNotNull(token, "Токен не получен");
+        String tokenCookie = authResponse.getCookie("token");
+        assertNotNull(tokenCookie, "Cookie с токеном не получена");
 
-        Response trackingResponse = given()
-                .header("Authorization", "Bearer " + token)
+        return authResponse;
+    }
+
+    @Test
+    public void testAccessAdminPanel() {
+        Response authResponse = loginAsAdmin();
+
+        Response response = given()
                 .cookies(authResponse.getCookies())
                 .when()
                 .log().all()
                 .get("/adminPanel");
-        trackingResponse.then().log().body();
-        assertEquals(200, trackingResponse.getStatusCode(), "Не удалось получить трекинг-номера");
+
+        response.then().log().body();
+        assertEquals(200, response.getStatusCode(), "Доступ к админ-панели не получен");
     }
 
     @Test
-    public void testAuthenticationAndCreateUsersAdmin() {
-        Response authResponse = given()
-                .contentType("application/json")
-                .body("{\"username\": \"user1\", \"password\": \"12345678\"}")
-                .when()
-                .post("/api/auth/login");
+    public void testCreateUser() {
+        Response authResponse = loginAsAdmin();
 
-        assertEquals(200, authResponse.getStatusCode(), "Аутентификация не удалась");
-
-        String token = authResponse.jsonPath().getString("token");
-        assertNotNull(token, "Токен не получен");
-
-        Response trackingResponse = given()
-                .header("Authorization", "Bearer " + token)
+        Response response = given()
                 .cookies(authResponse.getCookies())
                 .contentType("application/json")
-                .body("{\"userName\": \"user3\", \"password\": \"Zxcvb122\", \"role\": \"USER\"}")
+                .body("{\"userName\": \"user5\", \"password\": \"Zxcvb122\", \"role\": \"USER\"}")
                 .when()
                 .log().all()
                 .post("/adminPanel/createClient");
 
-        trackingResponse.then().log().body();
-
-        assertEquals(200, trackingResponse.getStatusCode(), "Не удалось получить трекинг-номера");
+        response.then().log().body();
+        assertEquals(200, response.getStatusCode(), "Не удалось создать пользователя");
     }
+
     @Test
-    public void testAuthenticationAndUpdateUsersAdmin() {
-        Response authResponse = given()
-                .contentType("application/json")
-                .body("{\"username\": \"user1\", \"password\": \"12345678\"}")
-                .when()
-                .post("/api/auth/login");
+    public void testUpdateUserRole() {
+        Response authResponse = loginAsAdmin();
 
-        assertEquals(200, authResponse.getStatusCode(), "Аутентификация не удалась");
-
-        String token = authResponse.jsonPath().getString("token");
-        assertNotNull(token, "Токен не получен");
-
-        Response trackingResponse = given()
-                .header("Authorization", "Bearer " + token)
+        Response response = given()
                 .cookies(authResponse.getCookies())
                 .contentType("application/json")
                 .body("{\"userName\": \"user3\", \"role\": \"ADMIN\"}")
@@ -93,25 +78,15 @@ public class AdminControllerTest {
                 .log().all()
                 .post("/adminPanel/updateClient");
 
-        trackingResponse.then().log().body();
-
-        assertEquals(200, trackingResponse.getStatusCode(), "Не удалось получить трекинг-номера");
+        response.then().log().body();
+        assertEquals(200, response.getStatusCode(), "Не удалось обновить пользователя");
     }
+
     @Test
-    public void testAuthenticationAndDeleteUsersAdmin() {
-        Response authResponse = given()
-                .contentType("application/json")
-                .body("{\"username\": \"user1\", \"password\": \"12345678\"}")
-                .when()
-                .post("/api/auth/login");
+    public void testDeleteUser() {
+        Response authResponse = loginAsAdmin();
 
-        assertEquals(200, authResponse.getStatusCode(), "Аутентификация не удалась");
-
-        String token = authResponse.jsonPath().getString("token");
-        assertNotNull(token, "Токен не получен");
-
-        Response trackingResponse = given()
-                .header("Authorization", "Bearer " + token)
+        Response response = given()
                 .cookies(authResponse.getCookies())
                 .contentType("application/json")
                 .body("{\"userName\": \"user5\"}")
@@ -119,26 +94,15 @@ public class AdminControllerTest {
                 .log().all()
                 .post("/adminPanel/deleteClient");
 
-        trackingResponse.then().log().body();
-
-        assertEquals(200, trackingResponse.getStatusCode(), "Не удалось получить трекинг-номера");
+        response.then().log().body();
+        assertEquals(200, response.getStatusCode(), "Не удалось удалить пользователя");
     }
 
     @Test
-    public void testAuthenticationAndDeleteAllAdmin() {
-        Response authResponse = given()
-                .contentType("application/json")
-                .body("{\"username\": \"user1\", \"password\": \"12345678\"}")
-                .when()
-                .post("/api/auth/login");
+    public void testDeleteAll() {
+        Response authResponse = loginAsAdmin();
 
-        assertEquals(200, authResponse.getStatusCode(), "Аутентификация не удалась");
-
-        String token = authResponse.jsonPath().getString("token");
-        assertNotNull(token, "Токен не получен");
-
-        Response trackingResponse = given()
-                .header("Authorization", "Bearer " + token)
+        Response response = given()
                 .cookies(authResponse.getCookies())
                 .contentType("application/json")
                 .body("{\"userName\": \"user5\"}")
@@ -146,8 +110,7 @@ public class AdminControllerTest {
                 .log().all()
                 .post("/adminPanel/deleteClient");
 
-        trackingResponse.then().log().body();
-
-        assertEquals(200, trackingResponse.getStatusCode(), "Не удалось получить трекинг-номера");
+        response.then().log().body();
+        assertEquals(200, response.getStatusCode(), "Не удалось выполнить массовое удаление");
     }
 }
