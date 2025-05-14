@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 public interface JpaClientRepo extends JpaRepository<Client, byte[]> {
     @Transactional
     @Modifying
-    @Query("DELETE FROM Client c WHERE c.role = 'OWNER'")
+    @Query("DELETE FROM Client c WHERE c.role != 'OWNER' AND c.role = 'ADMIN'")
     void deleteAllAdmins();
 
     Client getClientByLoginName(String name);
