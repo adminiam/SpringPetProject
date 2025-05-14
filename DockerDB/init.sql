@@ -34,4 +34,4 @@ INSERT INTO `aliOrders`.`clients` (`id_client`, `login_name`, `password`, `role`
 VALUES (UUID_TO_BIN('49ec45e2-5026-4dcb-9423-b34bd7e9a845'),
         'user1',
         '$argon2i$v=19$m=65536,t=20,p=1$7E9CNI4YuDsXiAY6zfN/pA$vZBdYIB8tn41ZqKONErHVbzeoY7n2yRXnw53oGosz/0',
-        'ADMIN');
+        'OWNER');

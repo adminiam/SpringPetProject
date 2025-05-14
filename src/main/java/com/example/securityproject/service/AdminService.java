@@ -31,10 +31,10 @@ public class AdminService {
         }
     }
 
-    public HttpStatus deleteClient(String userName) {
+    public HttpStatus deleteClient(String username) {
         try {
-            Client client = jpaClientRepo.getClientByLoginName(userName);
-            if (client != null) {
+            Client client = jpaClientRepo.getClientByLoginName(username);
+            if (client != null && !client.getRole().equals("OWNER")) {
                 jpaClientRepo.delete(client);
                 return HttpStatus.OK;
             }
