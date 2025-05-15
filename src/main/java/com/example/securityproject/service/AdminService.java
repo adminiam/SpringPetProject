@@ -66,15 +66,16 @@ public class AdminService {
     public HttpStatus updateClient(ClientUpdate request) {
         try {
             Client client = jpaClientRepo.getClientByLoginName(request.getUserName());
-            if (client != null && !client.getRole().equals("OWNER")) {
+            if (client != null && !client.getRole().equals("OWNER") && !request.getRole().equals("OWNER")) {
                 Client newClient = new Client();
                 newClient.setIdClientUUID(client.getIdClientUUID());
                 newClient.setLoginName(client.getLoginName());
                 newClient.setPassword(client.getPassword());
                 newClient.setRole(request.getRole());
                 jpaClientRepo.save(newClient);
+                return HttpStatus.OK;
             }
-            return HttpStatus.OK;
+            return HttpStatus.INTERNAL_SERVER_ERROR;
 
         } catch (Exception e) {
             throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
