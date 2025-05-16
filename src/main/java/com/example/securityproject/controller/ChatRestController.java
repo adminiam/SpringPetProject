@@ -1,7 +1,6 @@
 package com.example.securityproject.controller;
 
 import com.example.securityproject.dto.GetMessageForClient;
-import com.example.securityproject.dto.GetSenderName;
 import com.example.securityproject.dto.SendMessage;
 import com.example.securityproject.dto.SendMessageClient;
 import com.example.securityproject.models.Message;
@@ -45,7 +44,7 @@ public class ChatRestController {
     }
 
     @GetMapping("/getSenderName")
-    public String getSenderName(@RequestBody GetSenderName senderId) {
-        return userService.getUserName(senderId.getSenderId());
+    public String getSenderName(@RequestParam String senderId) {
+        return userService.getUserName(senderId);
     }
 }

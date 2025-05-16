@@ -38,11 +38,14 @@ public class ChatProducer {
     public HttpStatus sendMessage(String message) {
         try {
             Message msg = Message.builder().id(UUID.randomUUID()).message(message).senderId(userContext.getId()).receiverId(UUID.fromString("49ec45e2-5026-4dcb-9423-b34bd7e9a845")).build();
-            kafkaTemplate.send("chat_topic", String.valueOf(msg.getSenderId()),msg);
+            if (msg.getSenderId() != null) {
+                kafkaTemplate.send("chat_topic", String.valueOf(msg.getSenderId()), msg);
+                return HttpStatus.OK;
+            }
+            return HttpStatus.INTERNAL_SERVER_ERROR;
         } catch (Exception e) {
             throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
         }
-        return HttpStatus.OK;
     }
 
 }
