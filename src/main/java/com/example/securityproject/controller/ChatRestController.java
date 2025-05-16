@@ -39,7 +39,7 @@ public class ChatRestController {
     }
 
     @GetMapping("/getMessageForClient")
-    public List<Map<String, Message>> getMessageForClient(@RequestBody GetMessageForClient key) {
+    public List<Map<String, Message>> getMessageForClient(@RequestParam GetMessageForClient key) {
         return chatConsumer.consumeExactUser(key.getKey());
     }
 
