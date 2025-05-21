@@ -11,8 +11,6 @@ import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
-
-
     private final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     public String generateAccessToken(Authentication authentication) {
@@ -23,7 +21,11 @@ public class JwtTokenProvider {
 
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
-                .claim("role", userDetails.getAuthorities().stream().findFirst().get().getAuthority())
+                .claim("role", userDetails.getAuthorities()
+                        .stream()
+                        .findFirst()
+                        .get()
+                        .getAuthority())
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(key)
@@ -52,7 +54,6 @@ public class JwtTokenProvider {
                 .getBody()
                 .getSubject();
     }
-
 
     public boolean validateToken(String token) {
         try {
