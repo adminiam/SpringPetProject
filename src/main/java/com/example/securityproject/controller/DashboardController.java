@@ -3,14 +3,13 @@ package com.example.securityproject.controller;
 import com.example.securityproject.dto.OrderCreate;
 import com.example.securityproject.dto.OrderDelete;
 import com.example.securityproject.dto.OrderUpdate;
+import com.example.securityproject.dto.PaginatedResponse;
 import com.example.securityproject.entities.Order;
-import com.example.securityproject.service.HomeService;
+import com.example.securityproject.service.DashboardService;
 import com.example.securityproject.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("dashboard")
@@ -18,11 +17,11 @@ public class DashboardController {
     @Autowired
     OrderService orderService;
     @Autowired
-    HomeService homeService;
+    DashboardService dashboardService;
 
     @GetMapping("getTrackingNumbers")
-    public List<Order> getTrackingStatuses() {
-        return homeService.getTrackingStatuses();
+    public PaginatedResponse<Order> getTrackingStatuses(@RequestParam int page, @RequestParam int pageSize) {
+        return dashboardService.getTrackingStatuses(page,pageSize);
     }
 
     @PostMapping("createOrder")

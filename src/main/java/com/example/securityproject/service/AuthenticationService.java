@@ -48,7 +48,7 @@ public class AuthenticationService {
         Cookie refreshCookie = new Cookie("refreshToken", refreshToken);
         refreshCookie.setHttpOnly(true);
         refreshCookie.setSecure(true);
-        refreshCookie.setPath("/api/auth/refresh");
+        refreshCookie.setPath("/");
         refreshCookie.setMaxAge(7 * 24 * 60 * 60);
 
         response.addCookie(accessCookie);
@@ -108,7 +108,7 @@ public class AuthenticationService {
         Cookie refreshCookie = new Cookie("refreshToken", null);
         refreshCookie.setHttpOnly(true);
         refreshCookie.setSecure(true);
-        refreshCookie.setPath("/api/auth/refresh");
+        refreshCookie.setPath("/");
         refreshCookie.setMaxAge(0);
 
         response.addCookie(accessCookie);

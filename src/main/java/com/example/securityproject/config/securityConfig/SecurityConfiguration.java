@@ -50,7 +50,7 @@ public class SecurityConfiguration {
                         .anyRequest().authenticated()
                 )
 
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService()),
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService(),jpaClientRepo),
                         UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
