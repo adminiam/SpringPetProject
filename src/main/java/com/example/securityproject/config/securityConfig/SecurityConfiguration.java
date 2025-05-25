@@ -25,16 +25,16 @@ public class SecurityConfiguration {
     private final JpaClientRepo jpaClientRepo;
     private final JwtTokenProvider jwtTokenProvider;
     private final CorsConfig corsConfig;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    public SecurityConfiguration(JpaClientRepo jpaClientRepo, JwtTokenProvider jwtTokenProvider, CorsConfig config) {
+    public SecurityConfiguration(JpaClientRepo jpaClientRepo,
+                                 JwtTokenProvider jwtTokenProvider,
+                                 CorsConfig config,
+                                 JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
         this.jpaClientRepo = jpaClientRepo;
         this.jwtTokenProvider = jwtTokenProvider;
         this.corsConfig = config;
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new CustomArgon2PasswordEncoder();
+        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
     }
 
     @Bean
@@ -43,14 +43,14 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> corsConfig.corsConfigurationSource())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**", "/error").permitAll()
-                        .requestMatchers("/adminPanel/*", "/getMessage").hasAnyAuthority("ADMIN","OWNER")
+                        .requestMatchers("/adminPanel/*", "/getMessage").hasAnyAuthority("ADMIN", "OWNER")
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
                 )
-
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService(),jpaClientRepo),
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService(), jpaClientRepo),
                         UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -75,5 +75,10 @@ public class SecurityConfiguration {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
             throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new CustomArgon2PasswordEncoder();
     }
 }

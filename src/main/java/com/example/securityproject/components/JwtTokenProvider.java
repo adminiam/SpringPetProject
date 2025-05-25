@@ -16,7 +16,7 @@ public class JwtTokenProvider {
     public String generateAccessToken(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         Date now = new Date();
-        long accessTokenValidity = 15 * 60 * 1000;
+        long accessTokenValidity = 15 *  1000;
         Date expiryDate = new Date(now.getTime() + accessTokenValidity);
 
         return Jwts.builder()

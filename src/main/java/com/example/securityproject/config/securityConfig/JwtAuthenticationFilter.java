@@ -20,7 +20,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -47,17 +46,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = getTokenFromRequest(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token)) {
+        if (token != null) {
+            if (!jwtTokenProvider.validateToken(token)) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.getWriter().write("{\"error\": \"Invalid or expired token\"}");
+                return;
+            }
+
             String username = jwtTokenProvider.getUsernameFromToken(token);
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             Client client = jpaClientRepo.getClientByLoginName(username);
-
             if (client != null) {
                 userContext.setId(client.getIdClientUUID());
                 userContext.setName(client.getLoginName());
@@ -67,7 +70,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
-
 
 
     private String getTokenFromRequest(HttpServletRequest request) {
@@ -86,4 +88,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         return null;
     }
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
+        return path.startsWith("/api/auth/login") || path.startsWith("/api/auth/refresh");
+    }
+
 }
