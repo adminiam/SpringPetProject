@@ -12,6 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -78,11 +81,15 @@ public class AuthenticationService {
         if (client == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
         }
-
+        UserDetails userDetails =
+                User.withUsername(client.getLoginName())
+                        .password(client.getPassword())
+                        .authorities(new SimpleGrantedAuthority(client.getRole()))
+                        .build();
         Authentication authentication = new UsernamePasswordAuthenticationToken(
-                username,
+                userDetails,
                 null,
-                java.util.List.of(client::getRole)
+                userDetails.getAuthorities()
         );
 
         String newAccessToken = jwtTokenProvider.generateAccessToken(authentication);

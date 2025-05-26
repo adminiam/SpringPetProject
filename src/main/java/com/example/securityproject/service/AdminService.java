@@ -2,6 +2,7 @@ package com.example.securityproject.service;
 
 import com.example.securityproject.dto.ClientCreate;
 import com.example.securityproject.dto.ClientUpdate;
+import com.example.securityproject.dto.PaginatedResponse;
 import com.example.securityproject.entities.Client;
 import com.example.securityproject.exception.SuppressedStackTraceException;
 import com.example.securityproject.repository.JpaClientRepo;
@@ -23,13 +24,33 @@ public class AdminService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public List<Client> getClientsList() {
+    public PaginatedResponse<Client> getClientsList(int page, int pageSize) {
         try {
-            return jpaClientRepo.findAll();
+            if (pageSize <= 0) pageSize = 10;
+            if (page <= 0) page = 1;
+
+            List<Client> allClients = jpaClientRepo.findAll();
+            int total = allClients.size();
+
+            int totalPages = (int) Math.ceil((double) total / pageSize);
+            if (totalPages == 0) totalPages = 1;
+
+            if (page > totalPages) {
+                page = totalPages;
+            }
+
+            int fromIndex = (page - 1) * pageSize;
+            int toIndex = Math.min(fromIndex + pageSize, total);
+
+            List<Client> pagedClients = fromIndex >= total ? List.of() : allClients.subList(fromIndex, toIndex);
+
+            PaginatedResponse.Meta meta = new PaginatedResponse.Meta(page, pageSize, total);
+            return new PaginatedResponse<>(pagedClients, meta);
         } catch (Exception e) {
             throw new SuppressedStackTraceException("Error occurred " + e.getMessage());
         }
     }
+
 
     public HttpStatus deleteClient(String username) {
         try {
