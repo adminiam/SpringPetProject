@@ -44,18 +44,19 @@ public class AuthenticationService {
 
         Cookie accessCookie = new Cookie("accessToken", accessToken);
         accessCookie.setHttpOnly(true);
-        accessCookie.setSecure(true);
+        accessCookie.setSecure(false);
         accessCookie.setPath("/");
         accessCookie.setMaxAge(15 * 60);
+        response.setHeader("Set-Cookie", String.format("%s=%s; Path=/; HttpOnly; SameSite=Lax; Max-Age=%d", 
+            "accessToken", accessToken, 15 * 60));
 
         Cookie refreshCookie = new Cookie("refreshToken", refreshToken);
         refreshCookie.setHttpOnly(true);
-        refreshCookie.setSecure(true);
+        refreshCookie.setSecure(false);
         refreshCookie.setPath("/");
         refreshCookie.setMaxAge(7 * 24 * 60 * 60);
-
-        response.addCookie(accessCookie);
-        response.addCookie(refreshCookie);
+        response.addHeader("Set-Cookie", String.format("%s=%s; Path=/; HttpOnly; SameSite=Lax; Max-Age=%d", 
+            "refreshToken", refreshToken, 7 * 24 * 60 * 60));
 
         return ResponseEntity.ok(Map.of("message", "Login successful"));
     }
@@ -96,30 +97,19 @@ public class AuthenticationService {
 
         Cookie accessCookie = new Cookie("accessToken", newAccessToken);
         accessCookie.setHttpOnly(true);
-        accessCookie.setSecure(true);
+        accessCookie.setSecure(false);
         accessCookie.setPath("/");
         accessCookie.setMaxAge(15 * 60);
 
-        response.addCookie(accessCookie);
+        response.setHeader("Set-Cookie", String.format("%s=%s; Path=/; HttpOnly; SameSite=Lax; Max-Age=%d", 
+            "accessToken", newAccessToken, 15 * 60));
 
         return ResponseEntity.ok(Map.of("message", "Access token refreshed"));
     }
 
     public ResponseEntity<?> logout(HttpServletResponse response) {
-        Cookie accessCookie = new Cookie("accessToken", null);
-        accessCookie.setHttpOnly(true);
-        accessCookie.setSecure(true);
-        accessCookie.setPath("/");
-        accessCookie.setMaxAge(0);
-
-        Cookie refreshCookie = new Cookie("refreshToken", null);
-        refreshCookie.setHttpOnly(true);
-        refreshCookie.setSecure(true);
-        refreshCookie.setPath("/");
-        refreshCookie.setMaxAge(0);
-
-        response.addCookie(accessCookie);
-        response.addCookie(refreshCookie);
+        response.setHeader("Set-Cookie", "accessToken=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0");
+        response.addHeader("Set-Cookie", "refreshToken=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0");
 
         return ResponseEntity.ok(Map.of("message", "Logged out successfully"));
     }
