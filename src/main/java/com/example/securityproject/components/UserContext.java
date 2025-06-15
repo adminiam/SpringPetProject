@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Scope;
 @Getter
 @Setter
 @Component
-@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
+@Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class UserContext implements Authentication {
     private UUID id;
     private String name;
