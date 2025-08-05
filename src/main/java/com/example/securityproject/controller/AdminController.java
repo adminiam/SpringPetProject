@@ -3,14 +3,13 @@ package com.example.securityproject.controller;
 import com.example.securityproject.dto.ClientCreate;
 import com.example.securityproject.dto.ClientDelete;
 import com.example.securityproject.dto.ClientUpdate;
+import com.example.securityproject.dto.PaginatedResponse;
 import com.example.securityproject.entities.Client;
 import com.example.securityproject.annotations.Auditable;
 import com.example.securityproject.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("adminPanel")
@@ -19,8 +18,8 @@ public class AdminController {
     AdminService adminService;
 
     @GetMapping("")
-    public List<Client> getClientsList() {
-        return adminService.getClientsList();
+    public PaginatedResponse<Client> getClientsList(@RequestParam int page, @RequestParam int pageSize) {
+        return adminService.getClientsList(page,pageSize);
     }
 
     @Auditable(action = "Admin created new client")
